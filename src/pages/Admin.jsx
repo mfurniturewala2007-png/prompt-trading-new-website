@@ -108,13 +108,13 @@ const Admin = () => {
 
         alert(`Found ${data.length} items in the Excel file. Attempting to upload...`);
 
-        // Format and map data generically since we don't know the exact column names
+        // Format and map data specifically to match the Excel sheet headers provided
         const formattedData = data.map(item => ({
-          name: item.name || item.Name || item['Product Name'] || 'Unknown Product',
-          part_number: String(item.part_number || item['Part Number'] || item.partNumber || item.PartNumber || ''),
-          price: parseFloat(item.price || item.Price || item.Cost || 0) || 0,
-          brand: item.brand || item.Brand || 'Unknown Brand',
-          category: item.category || item.Category || 'General',
+          name: item['Tool Name'] || item.name || item.Name || item['Product Name'] || 'Unknown Product',
+          part_number: String(item['Part Number'] || item.part_number || item['Part number'] || ''),
+          price: parseFloat(item.price || item.Price || item.Cost || 0) || 0, // Fallback to 0 if no price column exists
+          brand: item.Brand || item.brand || item['Sub-Brand'] || 'Unknown Brand',
+          category: item['Tool Category'] || item.category || item.Category || 'General',
           image_url: item.image_url || item['Image URL'] || item.imageUrl || ''
         }));
 
