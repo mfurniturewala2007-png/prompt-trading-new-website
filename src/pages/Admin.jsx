@@ -3,6 +3,9 @@ import { PlusCircle, Edit, Trash2, UploadCloud, Save, X, Search, Settings, Tag, 
 import { supabase } from '../supabase';
 
 const Admin = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+  
   const [activeTab, setActiveTab] = useState('products'); // 'products', 'brands', 'settings'
   const [loading, setLoading] = useState(true);
   const [dbError, setDbError] = useState('');
@@ -129,6 +132,31 @@ const Admin = () => {
     setSavingSettings(false);
     alert("Settings saved successfully!");
   };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // Simple password gate
+    if (passwordInput === 'admin123') {
+      setIsAuthenticated(true);
+    } else {
+      alert('Incorrect Password');
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="container section-py" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+        <div className="glass" style={{ padding: '3rem', borderRadius: 'var(--radius-xl)', maxWidth: '400px', width: '100%', textAlign: 'center' }}>
+          <h2 style={{ marginBottom: '1.5rem', color: 'var(--primary-dark)' }}>Admin Login</h2>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>Please enter the master password to access the content management system.</p>
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <input type="password" required className="form-input" placeholder="Enter Password..." value={passwordInput} onChange={e => setPasswordInput(e.target.value)} />
+            <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Secure Login</button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container section-py" style={{ maxWidth: '1400px' }}>
