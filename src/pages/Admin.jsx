@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { PlusCircle, Edit, Trash2, UploadCloud, Save, X, Search, Settings, Tag, Package } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import { supabase } from '../supabase';
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
+  const fileInputRef = useRef(null);
   
   const [activeTab, setActiveTab] = useState('products'); // 'products', 'brands', 'settings'
   const [loading, setLoading] = useState(true);
@@ -87,6 +89,50 @@ const Admin = () => {
       await supabase.from('products').delete().eq('id', id);
       fetchAllData();
     }
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (evt) => {
+      try {
+        const bstr = evt.target.result;
+        const wb = XLSX.read(bstr, { type: 'binary' });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws);
+        
+        if (data.length === 0) return alert("The Excel file is empty!");
+
+        alert(`Found ${data.length} items in the Excel file. Attempting to upload...`);
+
+        // Format and map data generically since we don't know the exact column names
+        const formattedData = data.map(item => ({
+          name: item.name || item.Name || item['Product Name'] || 'Unknown Product',
+          part_number: String(item.part_number || item['Part Number'] || item.partNumber || item.PartNumber || ''),
+          price: parseFloat(item.price || item.Price || item.Cost || 0) || 0,
+          brand: item.brand || item.Brand || 'Unknown Brand',
+          category: item.category || item.Category || 'General',
+          image_url: item.image_url || item['Image URL'] || item.imageUrl || ''
+        }));
+
+        const { error } = await supabase.from('products').insert(formattedData);
+        if (error) {
+           console.error(error);
+           alert("Error uploading data to database: " + error.message);
+        } else {
+           alert(`Successfully imported ${formattedData.length} products!`);
+           fetchAllData();
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Failed to read the Excel file. Please ensure it's a valid .xlsx or .csv format.");
+      }
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    };
+    reader.readAsBinaryString(file);
   };
 
   /* ---- Brands Logic ---- */
@@ -204,7 +250,16 @@ const Admin = () => {
                   <input type="text" className="form-input" placeholder="Search products..." style={{ paddingLeft: '2.5rem' }} value={searchProduct} onChange={e => setSearchProduct(e.target.value)} />
                 </div>
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                  <button className="btn btn-outline"><UploadCloud size={20} /> Import Excel</button>
+                  <input 
+                    type="file" 
+                    accept=".xlsx, .xls, .csv" 
+                    ref={fileInputRef} 
+                    onChange={handleFileUpload} 
+                    style={{ display: 'none' }} 
+                  />
+                  <button className="btn btn-outline" onClick={() => fileInputRef.current?.click()}>
+                    <UploadCloud size={20} /> Import Excel
+                  </button>
                   <button className="btn btn-primary" onClick={() => handleOpenProductModal()}><PlusCircle size={20} /> Add Tool</button>
                 </div>
               </div>
