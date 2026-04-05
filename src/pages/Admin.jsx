@@ -307,8 +307,8 @@ const Admin = () => {
                       <button onClick={() => handleOpenBrandModal(brand)} style={{ color: 'var(--text-secondary)' }}><Edit size={16}/></button>
                       <button onClick={() => handleDeleteBrand(brand.id)} style={{ color: '#ef4444' }}><Trash2 size={16}/></button>
                     </div>
-                    <div style={{ height: '80px', width: '80px', background: 'var(--primary-light)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', overflow: 'hidden' }}>
-                      {brand.image_url ? <img src={brand.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/> : <Tag size={32} color="var(--primary-dark)" />}
+                    <div style={{ height: '80px', width: '140px', background: 'var(--primary-light)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', overflow: 'hidden' }}>
+                      {brand.image_url ? <img src={brand.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '0.5rem' }}/> : <Tag size={32} color="var(--primary-dark)" />}
                     </div>
                     <h3 style={{ textAlign: 'center', marginBottom: '0.5rem' }}>{brand.name}</h3>
                     <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.875rem' }}>{brand.description}</p>

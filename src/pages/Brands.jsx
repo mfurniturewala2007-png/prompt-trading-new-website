@@ -40,11 +40,11 @@ const Brands = () => {
               alignItems: 'center'
             }}>
               <div style={{
-                width: '100px', height: '100px', background: 'var(--primary-light)', color: 'var(--primary-dark)',
-                borderRadius: '50%', margin: '0 auto 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden'
+                width: '180px', height: '100px', background: 'var(--primary-light)', color: 'var(--primary-dark)',
+                borderRadius: 'var(--radius-md)', margin: '0 auto 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden'
               }}>
                 {brand.image_url ? (
-                  <img src={brand.image_url} alt={brand.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img src={brand.image_url} alt={brand.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '0.5rem' }} />
                 ) : (
                   <Tag size={40} />
                 )}
