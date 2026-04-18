@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Heavy-Duty Industrial Design System */
-  --primary-color: #f97316; /* Safety Orange */
-  --primary-dark: #c2410c;
-  --primary-light: #ffedd5;
-  --accent-color: #ef4444; /* Precision red */
+  /* Heavy-Duty Industrial Design System - Logo Matched */
+  --primary-color: #00a99d; /* Vibrant Teal from Logo */
+  --primary-dark: #008c82;
+  --primary-light: #e0f6f4;
+  --accent-color: #f59e0b; /* Amber highlight */
   
   /* Neutral Palette - Carbon & Steel */
   --bg-color: #09090b;

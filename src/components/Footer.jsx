@@ -33,7 +33,18 @@ const Footer = () => {
               <Link to="/catalog" style={{ color: 'var(--text-dim)', transition: 'var(--transition)' }}>Product Catalog</Link>
               <Link to="/brands" style={{ color: 'var(--text-dim)', transition: 'var(--transition)' }}>Authorized Brands</Link>
               <Link to="/about" style={{ color: 'var(--text-dim)', transition: 'var(--transition)' }}>About Us</Link>
-              <Link to="/admin" style={{ color: 'var(--text-dim)', transition: 'var(--transition)' }}>Partner Login</Link>
+              <Link to="/admin" className="btn-outline" style={{ 
+                marginTop: '1.5rem', 
+                padding: '0.6rem 1.25rem', 
+                fontSize: '0.85rem', 
+                textAlign: 'center',
+                borderColor: 'var(--primary-color)',
+                color: 'var(--primary-color)',
+                borderRadius: 'var(--radius-sm)',
+                textTransform: 'uppercase',
+                fontWeight: 700,
+                letterSpacing: '1px'
+              }}>Control Panel</Link>
             </div>
           </div>
 
