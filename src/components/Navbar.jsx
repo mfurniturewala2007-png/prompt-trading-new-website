@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingCart, Menu, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useUser } from '../context/UserContext';
 import './Navbar.css';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { getCartCount } = useCart();
+  const { user, logout, isRegistered } = useUser();
   const location = useLocation();
-  const registeredUser = JSON.parse(localStorage.getItem('pt_registered') || 'null');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,15 +44,23 @@ const Navbar = () => {
         </nav>
 
         <div className="nav-actions">
-          {registeredUser ? (
-            <span style={{ 
-              display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-              padding: '0.5rem 1rem', fontSize: '0.8rem', borderRadius: '4px',
-              border: '1px solid rgba(130, 211, 222, 0.4)',
-              color: 'var(--primary-color)', fontWeight: 700
-            }}>
-              ✓ {registeredUser.name.split(' ')[0]}
-            </span>
+          {isRegistered ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <span style={{ 
+                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                padding: '0.5rem 1rem', fontSize: '0.8rem', borderRadius: '4px',
+                border: '1px solid rgba(130, 211, 222, 0.4)',
+                color: 'var(--primary-color)', fontWeight: 700
+              }}>
+                ✓ {user.name.split(' ')[0]}
+              </span>
+              <button 
+                onClick={logout}
+                style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: '0.7rem', cursor: 'pointer', textDecoration: 'underline' }}
+              >
+                Logout
+              </button>
+            </div>
           ) : (
             <Link to="/login" className="btn btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: '0.8rem', borderRadius: '4px', border: '1px solid var(--primary-color)' }}>Register</Link>
           )}

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Phone, Mail, ArrowRight, ShieldCheck, HardHat } from 'lucide-react';
+import { Mail, ArrowRight, ShieldCheck, HardHat } from 'lucide-react';
 import { supabase } from '../supabase';
+import { useUser } from '../context/UserContext';
 
 const Login = () => {
+  const { login } = useUser();
   const [formData, setFormData] = useState({
     name: '',
     phone_number: '',
@@ -21,16 +23,14 @@ const Login = () => {
     try {
       const { data, error: dbError } = await supabase
         .from('customers')
-        .insert([formData]);
+        .insert([formData])
+        .select()
+        .single();
 
       if (dbError) throw dbError;
       
-      // Persist registration state so the navbar updates even after reload
-      localStorage.setItem('pt_registered', JSON.stringify({ 
-        name: formData.name, 
-        email: formData.email,
-        phone: formData.phone_number
-      }));
+      // Use the login function from context
+      login(data);
       setSuccess(true);
       setFormData({ name: '', phone_number: '', email: '' });
     } catch (err) {

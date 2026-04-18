@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
-import { Trash2, Send, ShoppingBag } from 'lucide-react';
+import { Trash2, Send, ShoppingBag, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabase';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useUser } from '../context/UserContext';
+import emailjs from '@emailjs/browser';
 
 const Checkout = () => {
   const { cartItems, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
+  const { user, isRegistered } = useUser();
   const [enquiryEmail, setEnquiryEmail] = useState('mfurniturewala2007@gmail.com');
-  const registeredUser = JSON.parse(localStorage.getItem('pt_registered') || 'null');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   // Fetch the admin enquiry email from settings
   useEffect(() => {
@@ -19,35 +23,50 @@ const Checkout = () => {
     fetchEmail();
   }, []);
 
-  const handleSendEnquiry = () => {
-    if (cartItems.length === 0) return;
+  const handleSendEnquiry = async () => {
+    if (cartItems.length === 0 || !isRegistered) return;
+    setIsSubmitting(true);
 
-    const subject = `Tool Enquiry from ${registeredUser?.name || 'Customer'} — Prompt Trading Co.`;
+    try {
+      // 1. Save to Supabase enquiries table
+      const { error: dbError } = await supabase.from('enquiries').insert([{
+        customer_name: user.name,
+        customer_email: user.email,
+        customer_phone: user.phone || '',
+        items: cartItems,
+        total_amount: getCartTotal()
+      }]);
 
-    const itemLines = cartItems.map(item =>
-      `• ${item.name} (${item.brand || ''}) | Part No: ${item.part_number || 'N/A'} | Qty: ${item.quantity} | Unit Price: ₹${Number(item.price).toLocaleString('en-IN')} | Subtotal: ₹${(item.price * item.quantity).toLocaleString('en-IN')}`
-    ).join('\n');
+      if (dbError) throw dbError;
 
-    const body = `Hello Prompt Trading Team,
+      // 2. Send via EmailJS (Gmail-based)
+      // NOTE: You need to replace these placeholders with your actual EmailJS keys
+      const templateParams = {
+        to_email: enquiryEmail,
+        customer_name: user.name,
+        customer_email: user.email,
+        customer_phone: user.phone || 'N/A',
+        total_amount: `₹${getCartTotal().toLocaleString('en-IN')}`,
+        items_list: cartItems.map(item => 
+          `${item.name} (${item.brand}) - Qty: ${item.quantity} - ₹${(item.price * item.quantity).toLocaleString('en-IN')}`
+        ).join('\n')
+      };
 
-I am interested in purchasing the following tools. Please get in touch with a quote or availability confirmation.
+      await emailjs.send(
+        'YOUR_SERVICE_ID', 
+        'YOUR_TEMPLATE_ID', 
+        templateParams, 
+        'YOUR_PUBLIC_KEY'
+      );
 
---- Products ---
-${itemLines}
-
---- Order Total ---
-₹${getCartTotal().toLocaleString('en-IN')}
-
---- My Details ---
-Name: ${registeredUser?.name || 'Not provided'}
-Email: ${registeredUser?.email || 'Not provided'}
-Phone: ${registeredUser?.phone || 'Not provided'}
-
-Thank you,
-${registeredUser?.name || 'Customer'}`;
-
-    const mailtoLink = `mailto:${enquiryEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailtoLink;
+      setIsSuccess(true);
+      clearCart();
+    } catch (err) {
+      console.error('Enquiry Error:', err);
+      alert('Failed to send enquiry. Please try again or contact us directly.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -133,35 +152,75 @@ ${registeredUser?.name || 'Customer'}`;
               </span>
             </div>
 
-            {registeredUser && (
+            {isRegistered && (
               <div style={{ background: 'rgba(130, 211, 222, 0.05)', border: '1px solid rgba(130, 211, 222, 0.15)', borderRadius: '12px', padding: '1rem', marginBottom: '1.5rem', fontSize: '0.85rem' }}>
                 <strong style={{ color: 'var(--primary-color)', display: 'block', marginBottom: '0.25rem' }}>Sending as:</strong>
-                <span style={{ color: 'var(--text-secondary)' }}>{registeredUser.name} — {registeredUser.email}</span>
+                <span style={{ color: 'var(--text-secondary)' }}>{user.name} — {user.email}</span>
               </div>
             )}
 
             <button
               onClick={handleSendEnquiry}
               className="btn btn-primary"
-              style={{ width: '100%', padding: '1rem', fontSize: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', borderRadius: '8px' }}
+              disabled={isSubmitting || !isRegistered}
+              style={{ 
+                width: '100%', padding: '1rem', fontSize: '1rem', fontWeight: 700, 
+                display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                gap: '0.75rem', borderRadius: '8px',
+                opacity: (isSubmitting || !isRegistered) ? 0.6 : 1
+              }}
             >
-              <Send size={20} />
-              Send Enquiry via Email
+              <Send size={20} className={isSubmitting ? 'animate-pulse' : ''} />
+              {isSubmitting ? 'Sending Enquiry...' : 'Send Enquiry via Gmail'}
             </button>
             <p style={{ textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.8rem', marginTop: '1rem' }}>
-              Opens your email app pre-filled with all product details
+              Directly notifies the Prompt Trading team about your selection.
             </p>
 
-            {!registeredUser && (
+            {!isRegistered && (
               <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(249,115,22,0.05)', borderRadius: '12px', border: '1px solid rgba(249,115,22,0.15)', fontSize: '0.85rem', textAlign: 'center' }}>
                 <Link to="/login" style={{ color: 'var(--primary-color)', fontWeight: 700 }}>Register first</Link>
-                <span style={{ color: 'var(--text-dim)' }}> to include your contact details in the enquiry.</span>
+                <span style={{ color: 'var(--text-dim)' }}> to auto-include your details in the enquiry.</span>
               </div>
             )}
           </div>
 
         </div>
       )}
+
+      {/* Success Modal/Overlay */}
+      <AnimatePresence>
+        {isSuccess && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="glass"
+              style={{ maxWidth: '500px', width: '100%', padding: '4rem 2rem', textAlign: 'center', borderRadius: '24px' }}
+            >
+              <div style={{ width: '80px', height: '80px', background: 'rgba(34, 197, 94, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem' }}>
+                <CheckCircle2 size={40} color="#22c55e" />
+              </div>
+              <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Enquiry Sent!</h2>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '2.5rem', lineHeight: 1.6 }}>
+                Your request has been received. Our procurement team will review the availability of the selected tools and contact you at <strong>{user.email}</strong> shortly.
+              </p>
+              <button 
+                onClick={() => setIsSuccess(false)}
+                className="btn btn-primary"
+                style={{ width: '100%' }}
+              >
+                Continue Browsing
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

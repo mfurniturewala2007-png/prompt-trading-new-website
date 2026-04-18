@@ -4,7 +4,7 @@
 CREATE TABLE products (
   id uuid default gen_random_uuid() primary key,
   name text not null,
-  part_number text,
+  part_number text UNIQUE,
   quantity_in_stock numeric default 0,
   brand text,
   sub_brand text,
@@ -46,5 +46,16 @@ CREATE TABLE customers (
   name text not null,
   phone_number text not null,
   email text unique not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+-- 5. Create the enquiries table (to track cart requests)
+CREATE TABLE enquiries (
+  id uuid default gen_random_uuid() primary key,
+  customer_name text not null,
+  customer_email text not null,
+  customer_phone text,
+  items jsonb not null, -- Stores the array of cart items
+  total_amount numeric not null,
+  status text default 'pending', -- pending, contacted, completed, cancelled
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { PlusCircle, Edit, Trash2, UploadCloud, X, Search, Settings, Tag, Package, FolderUp, CheckCircle, AlertCircle, Loader, Users } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, UploadCloud, X, Search, Settings, Tag, Package, FolderUp, CheckCircle, AlertCircle, Loader, Users, Mail } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { supabase } from '../supabase';
 
@@ -9,7 +9,7 @@ const Admin = () => {
   const fileInputRef = useRef(null);
   const brandFileInputRef = useRef(null);
   
-  const [activeTab, setActiveTab] = useState('products'); // 'products', 'brands', 'customers', 'settings'
+  const [activeTab, setActiveTab] = useState('products'); // 'products', 'brands', 'customers', 'enquiries', 'settings'
   const [loading, setLoading] = useState(true);
   const [dbError, setDbError] = useState('');
 
@@ -19,6 +19,16 @@ const Admin = () => {
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
   const [productForm, setProductForm] = useState({ name: '', part_number: '', price: '', quantity_in_stock: '', brand: '', sub_brand: '', category: '', image_url: '' });
+
+  // Bulk Actions State
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+  const [bulkAction, setBulkAction] = useState({ 
+    field: 'quantity_in_stock', // 'quantity_in_stock' or 'price'
+    operation: 'add',           // 'add', 'set', 'percent'
+    value: 0, 
+    targetType: 'all',          // 'all', 'brand', 'category'
+    targetValue: ''             // e.g. "DeWalt" or "Power Tools"
+  });
 
   // Brands State
   const [brands, setBrands] = useState([]);
@@ -36,6 +46,11 @@ const Admin = () => {
 
   // Customers State
   const [customers, setCustomers] = useState([]);
+  const [searchCustomer, setSearchCustomer] = useState('');
+
+  // Enquiries State
+  const [enquiries, setEnquiries] = useState([]);
+  const [searchEnquiry, setSearchEnquiry] = useState('');
 
   // Settings State
   const [settings, setSettings] = useState({ about_text: '', goal: '', enquiry_email: 'mfurniturewala2007@gmail.com' });
@@ -60,6 +75,10 @@ const Admin = () => {
         const { data, error } = await supabase.from('customers').select('*').order('created_at', { ascending: false });
         if (error) throw error;
         setCustomers(data || []);
+      } else if (activeTab === 'enquiries') {
+        const { data, error } = await supabase.from('enquiries').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+        setEnquiries(data || []);
       } else if (activeTab === 'settings') {
         const { data, error } = await supabase.from('site_settings').select('*').limit(1).single();
         if (error && error.code !== 'PGRST116') throw error; // ignore no rows error
@@ -107,6 +126,70 @@ const Admin = () => {
     }
   };
 
+  const handleInlineUpdate = async (id, field, value) => {
+    const { error } = await supabase.from('products').update({ [field]: value }).eq('id', id);
+    if (error) {
+      alert("Error updating: " + error.message);
+    } else {
+      // Opt: We could fetchAllData(), but to keep UI fast, we just update local state
+      setProducts(prev => prev.map(p => p.id === id ? { ...p, [field]: value } : p));
+    }
+  };
+
+  const handleBulkActionExecute = async (e) => {
+    e.preventDefault();
+    if (!window.confirm(`Are you sure you want to apply this bulk update to ${bulkAction.targetType === 'all' ? 'ALL products' : `products matching "${bulkAction.targetValue}"`}?`)) return;
+
+    // Fetch products based on filter
+    let query = supabase.from('products').select('*');
+    if (bulkAction.targetType === 'brand') query = query.ilike('brand', `%${bulkAction.targetValue}%`);
+    if (bulkAction.targetType === 'category') query = query.ilike('category', `%${bulkAction.targetValue}%`);
+    
+    const { data: targetProducts, error: fetchError } = await query;
+    if (fetchError || !targetProducts || targetProducts.length === 0) {
+      alert("No products found matching that criteria or database error.");
+      return;
+    }
+
+    const val = parseFloat(bulkAction.value);
+    
+    const updates = targetProducts.map(p => {
+      let newValue = parseFloat(p[bulkAction.field]) || 0;
+      if (bulkAction.operation === 'add') newValue += val;
+      if (bulkAction.operation === 'set') newValue = val;
+      if (bulkAction.operation === 'percent') newValue = newValue * (1 + (val / 100));
+      
+      if (bulkAction.field === 'quantity_in_stock') newValue = Math.max(0, Math.round(newValue));
+      if (bulkAction.field === 'price') newValue = Math.max(0, newValue);
+
+      return { ...p, [bulkAction.field]: newValue };
+    });
+
+    const { error: updateError } = await supabase.from('products').upsert(updates, { onConflict: 'id' });
+    if (updateError) {
+      alert("Error updating products: " + updateError.message);
+    } else {
+      alert(`Successfully updated ${updates.length} products.`);
+      setIsBulkModalOpen(false);
+      fetchAllData();
+    }
+  };
+
+  const handleDeleteAllProducts = async () => {
+    if (window.confirm("WARNING: Are you sure you want to delete ALL tools from the inventory? This action cannot be undone.")) {
+      // Supabase trick to delete all rows: provide a filter that matches everything, like neq('id', null) or greater than.
+      // Easiest is to use an inequality filter on a known column.
+      const { error } = await supabase.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      if (error) {
+        alert("Error deleting all tools: " + error.message);
+      } else {
+        alert("All tools have been deleted.");
+        fetchAllData();
+      }
+    }
+  };
+
+
   const handleProductFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -124,23 +207,56 @@ const Admin = () => {
 
         alert(`Found ${data.length} products in the Excel file. Attempting to upload...`);
 
-        const formattedData = data.map(item => ({
-          name: item['Tool Name'] || item.name || item.Name || item['Product Name'] || 'Unknown Product',
-          part_number: String(item['Part Number'] || item.part_number || item['Part number'] || ''),
-          price: parseFloat(item.price || item.Price || item.Cost || 0) || 0,
-          quantity_in_stock: parseInt(item['Quantity in Stock'] || item.quantity || item.Quantity || 0) || 0,
-          brand: item.Brand || item.brand || 'Unknown Brand',
-          sub_brand: item['Sub-Brand'] || item.sub_brand || item.subbrand || '',
-          category: item['Tool Category'] || item.category || item.Category || 'General',
-          image_url: item.image_url || item['Image URL'] || item.imageUrl || ''
-        }));
+        const { data: existingProducts } = await supabase.from('products').select('*');
+        const existingMap = new Map((existingProducts || []).map(p => [p.part_number, p]));
 
-        const { error } = await supabase.from('products').insert(formattedData);
+        const upsertData = data.map(item => {
+          const part_number = String(item['Part Number'] || item.part_number || item['Part number'] || '');
+          const existing = existingMap.get(part_number);
+
+          const getName = () => item['Tool Name'] || item.name || item.Name || item['Product Name'];
+          const getPrice = () => item.price !== undefined ? item.price : (item.Price !== undefined ? item.Price : item.Cost);
+          const getQty = () => item['Quantity in Stock'] !== undefined ? item['Quantity in Stock'] : (item.quantity !== undefined ? item.quantity : item.Quantity);
+          const getBrand = () => item.Brand || item.brand;
+          const getSubBrand = () => item['Sub-Brand'] || item.sub_brand || item.subbrand;
+          const getCat = () => item['Tool Category'] || item.category || item.Category;
+          const getImg = () => item.image_url || item['Image URL'] || item.imageUrl;
+
+          if (existing) {
+            // Update existing record
+            return {
+              id: existing.id,
+              part_number: existing.part_number,
+              name: getName() !== undefined ? getName() : existing.name,
+              price: getPrice() !== undefined ? parseFloat(getPrice() || 0) : existing.price,
+              quantity_in_stock: getQty() !== undefined ? parseInt(getQty() || 0) : existing.quantity_in_stock,
+              brand: getBrand() !== undefined ? getBrand() : existing.brand,
+              sub_brand: getSubBrand() !== undefined ? getSubBrand() : existing.sub_brand,
+              category: getCat() !== undefined ? getCat() : existing.category,
+              image_url: getImg() !== undefined ? getImg() : existing.image_url
+            };
+          } else {
+            // Insert new record
+            return {
+              name: getName() || 'Unknown Product',
+              part_number: part_number,
+              price: parseFloat(getPrice() || 0) || 0,
+              quantity_in_stock: parseInt(getQty() || 0) || 0,
+              brand: getBrand() || 'Unknown Brand',
+              sub_brand: getSubBrand() || '',
+              category: getCat() || 'General',
+              image_url: getImg() || ''
+            };
+          }
+        });
+
+        // Use upsert matching on ID (for existing) and letting DB generated ID for new ones
+        const { error } = await supabase.from('products').upsert(upsertData, { onConflict: 'id' });
         if (error) {
            console.error(error);
            alert("Error uploading data to database: " + error.message);
         } else {
-           alert(`Successfully imported ${formattedData.length} products!`);
+           alert(`Successfully imported/updated ${upsertData.length} products!`);
            fetchAllData();
         }
       } catch (err) {
@@ -332,6 +448,12 @@ const Admin = () => {
           <Users size={20} /> Registered Customers
         </button>
         <button 
+          onClick={() => setActiveTab('enquiries')} 
+          style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', fontWeight: '600', color: activeTab === 'enquiries' ? 'white' : 'var(--text-secondary)', background: activeTab === 'enquiries' ? 'var(--primary-color)' : 'transparent', transition: 'var(--transition)' }}
+        >
+          <Mail size={20} /> Tool Enquiries
+        </button>
+        <button 
           onClick={() => setActiveTab('settings')} 
           style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', fontWeight: '600', color: activeTab === 'settings' ? 'white' : 'var(--text-secondary)', background: activeTab === 'settings' ? 'var(--primary-color)' : 'transparent', transition: 'var(--transition)' }}
         >
@@ -351,7 +473,7 @@ const Admin = () => {
                   <Search size={18} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
                   <input type="text" className="form-input" placeholder="Search products..." style={{ paddingLeft: '2.5rem' }} value={searchProduct} onChange={e => setSearchProduct(e.target.value)} />
                 </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                   <input 
                     type="file" 
                     accept=".xlsx, .xls, .csv" 
@@ -362,8 +484,12 @@ const Admin = () => {
                   <button className="btn btn-outline" onClick={() => fileInputRef.current?.click()}>
                     <UploadCloud size={20} /> Import Excel
                   </button>
+                  <button className="btn btn-outline" onClick={() => setIsBulkModalOpen(true)}>
+                    <Settings size={20} /> Bulk Actions
+                  </button>
                   <button className="btn btn-primary" onClick={() => handleOpenProductModal()}><PlusCircle size={20} /> Add Tool</button>
                 </div>
+
               </div>
 
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
@@ -378,13 +504,44 @@ const Admin = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.filter(p => p.name?.toLowerCase().includes(searchProduct.toLowerCase())).map(product => (
+                  {products.filter(p => p.name?.toLowerCase().includes(searchProduct.toLowerCase()) || p.part_number?.toLowerCase().includes(searchProduct.toLowerCase())).map(product => (
                     <tr key={product.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                      <td style={{ padding: '1rem 0.5rem', fontWeight: '500' }}>{product.name}</td>
+                      <td style={{ padding: '1rem 0.5rem', fontWeight: '500' }}>
+                        <div>{product.name}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>{product.part_number}</div>
+                      </td>
                       <td style={{ padding: '1rem 0.5rem', color: 'var(--text-secondary)' }}>{product.brand} {product.sub_brand && `(${product.sub_brand})`}</td>
                       <td style={{ padding: '1rem 0.5rem', color: 'var(--text-secondary)' }}>{product.category}</td>
-                      <td style={{ padding: '1rem 0.5rem', color: 'var(--text-secondary)' }}>{product.quantity_in_stock}</td>
-                      <td style={{ padding: '1rem 0.5rem', fontWeight: 'bold' }}>₹{Number(product.price).toFixed(2)}</td>
+                      <td style={{ padding: '1rem 0.5rem' }}>
+                        <input 
+                          type="number" 
+                          defaultValue={product.quantity_in_stock}
+                          onBlur={(e) => {
+                            const val = parseInt(e.target.value);
+                            if (val !== product.quantity_in_stock && !isNaN(val)) handleInlineUpdate(product.id, 'quantity_in_stock', val);
+                          }}
+                          onKeyDown={(e) => { if (e.key === 'Enter') e.target.blur(); }}
+                          className="form-input" 
+                          style={{ width: '80px', padding: '0.25rem 0.5rem', textAlign: 'center', background: 'rgba(255,255,255,0.02)' }} 
+                        />
+                      </td>
+                      <td style={{ padding: '1rem 0.5rem', fontWeight: 'bold' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                          <span style={{ color: 'var(--text-dim)' }}>₹</span>
+                          <input 
+                            type="number" 
+                            step="0.01"
+                            defaultValue={product.price}
+                            onBlur={(e) => {
+                              const val = parseFloat(e.target.value);
+                              if (val !== product.price && !isNaN(val)) handleInlineUpdate(product.id, 'price', val);
+                            }}
+                            onKeyDown={(e) => { if (e.key === 'Enter') e.target.blur(); }}
+                            className="form-input" 
+                            style={{ width: '100px', padding: '0.25rem 0.5rem', background: 'rgba(255,255,255,0.02)' }} 
+                          />
+                        </div>
+                      </td>
                       <td style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>
                         <button onClick={() => handleOpenProductModal(product)} style={{ color: 'var(--text-secondary)', marginRight: '1rem' }}><Edit size={18} /></button>
                         <button onClick={() => handleDeleteProduct(product.id)} style={{ color: '#ef4444' }}><Trash2 size={18} /></button>
@@ -516,7 +673,10 @@ const Admin = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {customers.map((c, i) => (
+                      {customers.filter(c => 
+                        c.name?.toLowerCase().includes(searchCustomer.toLowerCase()) || 
+                        c.email?.toLowerCase().includes(searchCustomer.toLowerCase())
+                      ).map((c, i) => (
                         <tr key={c.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                           <td style={{ padding: '1rem 0.5rem', color: 'var(--text-dim)', fontSize: '0.85rem' }}>{i + 1}</td>
                           <td style={{ padding: '1rem 0.5rem', fontWeight: '600' }}>{c.name}</td>
@@ -529,6 +689,75 @@ const Admin = () => {
                       ))}
                     </tbody>
                   </table>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ---- TAB: ENQUIRIES ---- */}
+          {activeTab === 'enquiries' && (
+            <div className="glass animate-fade-in-up" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem', background: 'var(--surface-color)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                <h2 style={{ fontSize: '1.25rem', margin: 0 }}>
+                  Tool Enquiries <span style={{ color: 'var(--primary-color)', marginLeft: '0.5rem', fontSize: '1rem' }}>({enquiries.length})</span>
+                </h2>
+                <div style={{ position: 'relative', width: '300px' }}>
+                  <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+                  <input type="text" className="form-input" placeholder="Search enquiries..." style={{ paddingLeft: '2.5rem', fontSize: '0.85rem' }} value={searchEnquiry} onChange={e => setSearchEnquiry(e.target.value)} />
+                </div>
+              </div>
+
+              {enquiries.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-dim)', border: '1px dashed var(--border-color)', borderRadius: 'var(--radius-md)' }}>
+                  No enquiries yet.
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  {enquiries.filter(e => 
+                    e.customer_name?.toLowerCase().includes(searchEnquiry.toLowerCase()) || 
+                    e.customer_email?.toLowerCase().includes(searchEnquiry.toLowerCase()) ||
+                    JSON.stringify(e.items).toLowerCase().includes(searchEnquiry.toLowerCase())
+                  ).map((enquiry) => (
+                    <div key={enquiry.id} className="glass" style={{ padding: '1.5rem', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                        <div>
+                          <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--primary-color)' }}>{enquiry.customer_name}</h3>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
+                            {enquiry.customer_email} • {enquiry.customer_phone}
+                          </div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
+                            {new Date(enquiry.created_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
+                          </div>
+                          <span style={{ 
+                            display: 'inline-block', marginTop: '0.5rem', padding: '0.2rem 0.6rem', 
+                            fontSize: '0.7rem', borderRadius: '4px', textTransform: 'uppercase', fontWeight: 800,
+                            background: enquiry.status === 'pending' ? 'rgba(249,115,22,0.1)' : 'rgba(34,197,94,0.1)',
+                            color: enquiry.status === 'pending' ? '#fb923c' : '#4ade80'
+                          }}>
+                            {enquiry.status}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
+                        <h4 style={{ fontSize: '0.85rem', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.6 }}>Requested Items</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                          {enquiry.items?.map((item, idx) => (
+                            <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '0.5rem' }}>
+                              <span>{item.name} <small style={{ color: 'var(--text-dim)' }}>({item.brand})</small> × {item.quantity}</span>
+                              <span style={{ fontWeight: 600 }}>₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', paddingTop: '0.5rem', fontWeight: 700, fontSize: '1rem', color: 'var(--primary-color)' }}>
+                          <span>Total Estimated Amount</span>
+                          <span>₹{enquiry.total_amount?.toLocaleString('en-IN')}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -644,6 +873,59 @@ const Admin = () => {
           </div>
         </div>
       )}
+
+      {/* Bulk Actions Modal */}
+      {isBulkModalOpen && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div style={{ background: 'var(--surface-color)', width: '100%', maxWidth: '600px', borderRadius: 'var(--radius-xl)', padding: '2rem', position: 'relative' }}>
+            <button onClick={() => setIsBulkModalOpen(false)} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', color: 'var(--text-secondary)' }}><X size={24} /></button>
+            <h2 style={{ marginBottom: '2rem' }}>Advanced Bulk Actions</h2>
+            <form onSubmit={handleBulkActionExecute} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              
+              {/* Target Selection */}
+              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>1. Which Products?</label>
+                <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                  <label><input type="radio" value="all" checked={bulkAction.targetType === 'all'} onChange={e => setBulkAction({...bulkAction, targetType: e.target.value})} /> All Products</label>
+                  <label><input type="radio" value="brand" checked={bulkAction.targetType === 'brand'} onChange={e => setBulkAction({...bulkAction, targetType: e.target.value})} /> Specific Brand</label>
+                  <label><input type="radio" value="category" checked={bulkAction.targetType === 'category'} onChange={e => setBulkAction({...bulkAction, targetType: e.target.value})} /> Specific Category</label>
+                </div>
+                {bulkAction.targetType !== 'all' && (
+                  <input required type="text" className="form-input" placeholder={`Enter ${bulkAction.targetType} name...`} value={bulkAction.targetValue} onChange={e => setBulkAction({...bulkAction, targetValue: e.target.value})} />
+                )}
+              </div>
+
+              {/* Action Selection */}
+              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>2. What to Change?</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <select className="form-input" value={bulkAction.field} onChange={e => setBulkAction({...bulkAction, field: e.target.value})}>
+                    <option value="quantity_in_stock">Quantity in Stock</option>
+                    <option value="price">Price (Rate)</option>
+                  </select>
+                  <select className="form-input" value={bulkAction.operation} onChange={e => setBulkAction({...bulkAction, operation: e.target.value})}>
+                    <option value="add">Add ( + )</option>
+                    <option value="set">Set to Exact Number</option>
+                    <option value="percent">Increase by Percent (%)</option>
+                  </select>
+                  <input required type="number" step="0.01" className="form-input" placeholder="Value..." value={bulkAction.value} onChange={e => setBulkAction({...bulkAction, value: e.target.value})} style={{ gridColumn: '1 / -1' }} />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
+                <button type="button" onClick={handleDeleteAllProducts} className="btn btn-outline" style={{ borderColor: '#ef4444', color: '#ef4444', fontSize: '0.8rem', padding: '0.5rem 1rem' }}>
+                  <Trash2 size={16} /> Delete Entire Inventory
+                </button>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <button type="button" className="btn btn-outline" onClick={() => setIsBulkModalOpen(false)}>Cancel</button>
+                  <button type="submit" className="btn btn-primary" style={{ background: 'var(--primary-color)' }}>Execute Bulk Action</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
