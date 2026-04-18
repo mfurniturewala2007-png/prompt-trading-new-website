@@ -17,114 +17,101 @@ const Home = () => {
 
   return (
     <div style={{ background: 'var(--bg-color)', color: 'var(--text-primary)' }}>
-      {/* Heavy-Duty Hero Section */}
-      <section style={{ 
-        minHeight: '100vh', 
-        display: 'flex', 
-        alignItems: 'center', 
-        background: `linear-gradient(rgba(9, 9, 11, 0.8), rgba(9, 9, 11, 0.95)), url('/rugged_tools_hero_1776493354746.png')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        position: 'relative',
-        overflow: 'hidden',
-        paddingTop: '6rem'
-      }}>
-        {/* Luminous Glows */}
-        <div style={{
-          position: 'absolute', top: '20%', left: '10%', width: '300px', height: '300px',
-          background: 'var(--primary-color)', borderRadius: '50%', filter: 'blur(150px)', opacity: '0.1'
-        }} />
-        
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'center' }}>
-            <motion.div 
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
-            >
-              <motion.span 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="badge" 
-                style={{ 
-                  background: 'rgba(130, 211, 222, 0.1)', 
-                  color: 'var(--primary-color)',
-                  border: '1px solid rgba(130, 211, 222, 0.2)',
-                  padding: '4px 12px',
-                  borderRadius: '100px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px',
-                  fontSize: '0.7rem',
-                  fontWeight: 800,
-                  marginBottom: '1.5rem',
-                  display: 'inline-block'
-                }}
-              >
-                Industrial Sophistication
-              </motion.span>
-              <h1 style={{ fontSize: 'clamp(2.5rem, 8vw, 4.5rem)', marginBottom: '1.5rem', letterSpacing: '-2px', lineHeight: 1.1, fontWeight: 800 }}>
-                Premium Tools for <span className="text-gradient">Professionals</span>
-              </h1>
-              <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', marginBottom: '2.5rem', maxWidth: '500px', lineHeight: 1.6 }}>
-                Prompt Trading redefines industrial excellence. We treat precision tools as instruments, ensuring every project is built with the highest authorized hardware.
-              </p>
-              <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-                <Link to="/catalog" className="btn btn-primary" style={{ padding: '1rem 2.5rem', borderRadius: '4px', fontSize: '0.9rem', letterSpacing: '1px' }}>
-                  Explore Catalog <ArrowRight size={18} />
-                </Link>
-                <Link to="/brands" className="btn btn-outline" style={{ 
-                  padding: '1rem 2.5rem', 
-                  borderRadius: '4px', 
-                  fontSize: '0.9rem', 
-                  letterSpacing: '1px',
-                  borderColor: 'rgba(130, 211, 222, 0.3)',
-                  background: 'rgba(255,255,255,0.02)'
-                }}>
-                  Certified Brands
-                </Link>
-              </div>
-            </motion.div>
-
-            {/* Floating Asset Card */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.2, delay: 0.3 }}
-              className="glass"
-              style={{
-                borderRadius: '32px',
-                padding: '2.5rem',
-                border: '1px solid rgba(255,255,255,0.1)',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1.5rem',
-                maxHeight: '400px',
-                justifyContent: 'center'
-              }}
-            >
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <div style={{ width: '50px', height: '50px', background: 'var(--primary-color)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--bg-color)' }}>
-                  <Award size={30} />
-                </div>
-                <div>
-                  <h4 style={{ marginBottom: '2px' }}>Authorized Distributor</h4>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-dim)' }}>Direct partnership with top manufacturers</p>
-                </div>
-              </div>
-              <div style={{ height: '1px', background: 'var(--border-color)' }} />
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <div>
-                  <h2 style={{ fontSize: '2rem', marginBottom: '0' }}>150+</h2>
-                  <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-dim)' }}>Premium Brands</p>
-                </div>
-                <div>
-                  <h2 style={{ fontSize: '2rem', marginBottom: '0' }}>24/7</h2>
-                  <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-dim)' }}>Industrial Support</p>
-                </div>
-              </div>
-            </motion.div>
+      {/* Bento Layout Hero Section */}
+      <section className="bento-hero">
+        <div className="bento-grid">
+          
+          {/* Background / Right Image Area */}
+          <div className="bento-image-area">
+            <motion.img 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+              src="/editorial_tools_hero.png" 
+              alt="Premium Industrial Precision Tools" 
+              style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+            />
           </div>
+
+          {/* Main TEXT box (Large Left) */}
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="bento-box bento-text-main"
+          >
+            <span style={{ 
+                color: 'var(--text-dim)',
+                textTransform: 'uppercase',
+                letterSpacing: '2px',
+                fontSize: '0.75rem',
+                fontWeight: 800,
+                marginBottom: '1rem',
+                display: 'block'
+              }}>
+                Industrial Sophistication
+            </span>
+            <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', marginBottom: '1.5rem', letterSpacing: '-1.5px', lineHeight: 1.1, fontWeight: 800 }}>
+              Premium Tools for Professionals
+            </h1>
+            <p style={{ fontSize: '1rem', color: '#A1A1AA', lineHeight: 1.6, maxWidth: '400px' }}>
+              Prompt Trading redefines industrial excellence. Every project is built with authorized, precision hardware.
+            </p>
+          </motion.div>
+
+          {/* Secondary TEXT box (Center Bottom) */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="bento-box bento-text-sub"
+          >
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <div style={{ width: '40px', height: '40px', background: 'var(--primary-color)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#000' }}>
+                <Award size={24} />
+              </div>
+              <div>
+                <h4 style={{ marginBottom: '2px', fontSize: '1.1rem' }}>Authorized Distributor</h4>
+                <p style={{ fontSize: '0.8rem', color: '#A1A1AA', margin: 0 }}>Partners with top manufacturers</p>
+              </div>
+            </div>
+            <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)', marginBottom: '1.5rem' }} />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div>
+                <h2 style={{ fontSize: '1.75rem', margin: 0 }}>150+</h2>
+                <p style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#A1A1AA', margin: 0 }}>Premium Brands</p>
+              </div>
+              <div>
+                <h2 style={{ fontSize: '1.75rem', margin: 0 }}>24/7</h2>
+                <p style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#A1A1AA', margin: 0 }}>Industrial Support</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* MICRORITM 1 (Bottom Left CTA) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="bento-microritm-left"
+          >
+            <Link to="/catalog" className="bento-cta-btn">
+              Explore Catalog <ArrowRight size={16} style={{ marginLeft: '8px' }} />
+            </Link>
+          </motion.div>
+
+          {/* MICRORITM 2 (Bottom Right CTA) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.7 }}
+            className="bento-microritm-right"
+          >
+            <Link to="/brands" className="bento-cta-btn" style={{ background: '#FFF', color: '#000', border: '2px solid #0A0A0A' }}>
+              Certified Brands
+            </Link>
+          </motion.div>
+
         </div>
       </section>
 

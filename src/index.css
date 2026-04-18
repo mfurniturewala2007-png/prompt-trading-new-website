@@ -481,3 +481,116 @@ main.content {
   }
 }
 
+/* ── Bento Hero Section ───────────────────────────── */
+.bento-hero {
+  background-color: #F8F7F3;
+  min-height: 100vh;
+  padding-top: 6rem;
+  padding-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  color: #000;
+  position: relative;
+}
+
+.bento-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(10, minmax(50px, auto));
+  gap: 1.5rem;
+  padding: 2rem;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.bento-box {
+  background: #0A0A0A;
+  border-radius: 8px; /* Slight rounding like wireframe */
+  color: #FFF;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Specific Wireframe Elements */
+.bento-text-main {
+  grid-column: 1 / 7;
+  grid-row: 3 / 8;
+  position: relative;
+  z-index: 2;
+}
+
+.bento-text-sub {
+  grid-column: 6 / 10;
+  grid-row: 7 / 10;
+  padding: 2.5rem;
+  z-index: 3;
+  box-shadow: -10px -10px 40px rgba(248, 247, 243, 0.4);
+}
+
+.bento-image-area {
+  grid-column: 5 / 13;
+  grid-row: 1 / 11;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 1;
+}
+
+.bento-cta-btn {
+  background: #0A0A0A;
+  color: #FFF;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem 2rem;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: transform 0.3s, background 0.3s;
+  text-decoration: none;
+  z-index: 5;
+}
+
+.bento-cta-btn:hover {
+  background: var(--primary-color);
+  color: #000;
+  transform: translateY(-3px);
+}
+
+.bento-microritm-left {
+  grid-column: 1 / 4;
+  grid-row: 9 / 10;
+}
+
+.bento-microritm-right {
+  grid-column: 10 / 13;
+  grid-row: 9 / 10;
+}
+
+/* Mobile Stacking for Bento Hero */
+@media (max-width: 992px) {
+  .bento-grid {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .bento-image-area {
+    min-height: 400px;
+    order: -1; /* image on top on mobile */
+  }
+  
+  .bento-text-sub {
+    box-shadow: none;
+  }
+}
