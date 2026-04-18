@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
-import { Filter, Search, X, Tag, Layers, Package } from 'lucide-react';
+import { Filter, Search, X, Tag, Layers, Package, CheckCircle } from 'lucide-react';
 import { supabase } from '../supabase';
 import { motion } from 'framer-motion';
 
@@ -12,6 +12,7 @@ const Catalog = () => {
   const [selectedBrand, setSelectedBrand] = useState('All');
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [addedProductId, setAddedProductId] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -114,7 +115,6 @@ const Catalog = () => {
                   flexDirection: 'column',
                   transition: 'var(--transition)',
                   border: '1px solid rgba(255, 255, 255, 0.05)',
-                  background: 'rgba(27, 32, 36, 0.6)',
                   cursor: 'pointer'
                 }}
                 whileHover={{ y: -10, borderColor: 'rgba(130, 211, 222, 0.2)' }}
@@ -166,15 +166,28 @@ const Catalog = () => {
                         fontSize: '0.85rem', 
                         fontWeight: 700,
                         opacity: product.quantity_in_stock > 0 ? 1 : 0.5, 
-                        cursor: product.quantity_in_stock > 0 ? 'pointer' : 'not-allowed' 
+                        cursor: product.quantity_in_stock > 0 ? 'pointer' : 'not-allowed',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        transition: 'all 0.3s ease',
+                        background: addedProductId === product.id ? '#10b981' : 'var(--primary-color)'
                       }} 
                       onClick={(e) => {
                         e.stopPropagation(); // Stop card click from triggering
-                        if(product.quantity_in_stock > 0) addToCart(product);
+                        if(product.quantity_in_stock > 0) {
+                          addToCart(product);
+                          setAddedProductId(product.id);
+                          setTimeout(() => setAddedProductId(null), 2000); // Reset after 2s
+                        }
                       }}
                       disabled={product.quantity_in_stock <= 0}
                     >
-                      {product.quantity_in_stock > 0 ? 'Acquire' : 'Unavailable'}
+                      {addedProductId === product.id ? (
+                        <><CheckCircle size={16} /> Acquired</>
+                      ) : (
+                        product.quantity_in_stock > 0 ? 'Acquire' : 'Unavailable'
+                      )}
                     </button>
                   </div>
                 </div>
@@ -232,18 +245,31 @@ const Catalog = () => {
                   </div>
                   <button 
                     className="btn btn-primary" 
-                    style={{ padding: '1rem 2rem', fontSize: '1rem', borderRadius: '8px' }}
+                    style={{ 
+                      padding: '1rem 2rem', 
+                      fontSize: '1rem', 
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      transition: 'all 0.3s ease',
+                      background: addedProductId === selectedProduct.id ? '#10b981' : 'var(--primary-color)'
+                    }}
                     onClick={(e) => {
                         e.stopPropagation();
                         if (selectedProduct.quantity_in_stock > 0) {
                           addToCart(selectedProduct);
-                          // We can leave the modal open so they can click it multiple times, 
-                          // but the cart notification will show.
+                          setAddedProductId(selectedProduct.id);
+                          setTimeout(() => setAddedProductId(null), 2000); // Reset after 2s
                         }
                     }}
                     disabled={selectedProduct.quantity_in_stock <= 0}
                   >
-                    Acquire Component
+                    {addedProductId === selectedProduct.id ? (
+                      <><CheckCircle size={20} /> Component Acquired</>
+                    ) : (
+                      'Acquire Component'
+                    )}
                   </button>
                 </div>
              </div>
