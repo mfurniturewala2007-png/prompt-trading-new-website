@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { Filter, Search, X, Tag, Layers, Package, CheckCircle } from 'lucide-react';
 import { supabase } from '../supabase';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Catalog = () => {
   const { addToCart } = useCart();
@@ -34,7 +34,11 @@ const Catalog = () => {
   });
 
   return (
-    <div className="container" style={{ paddingTop: '10rem', paddingBottom: '8rem' }}>
+    <div className="container" style={{ paddingTop: '10rem', paddingBottom: '8rem', position: 'relative' }}>
+      {/* Ambient background orbs for true glassmorphism refraction */}
+      <div style={{ position: 'absolute', top: '5%', left: '-5%', width: '600px', height: '600px', background: 'var(--primary-color)', borderRadius: '50%', filter: 'blur(200px)', opacity: 0.15, zIndex: -1, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: '10%', right: '-5%', width: '500px', height: '500px', background: '#3b82f6', borderRadius: '50%', filter: 'blur(200px)', opacity: 0.1, zIndex: -1, pointerEvents: 'none' }} />
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '4rem', flexWrap: 'wrap', gap: '2rem' }}>
         <div>
           <span className="badge" style={{ color: 'var(--primary-color)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '2px', display: 'block', marginBottom: '1rem' }}>Inventory</span>
@@ -105,8 +109,10 @@ const Catalog = () => {
             {filteredProducts.length > 0 ? filteredProducts.map(product => (
               <motion.div 
                 key={product.id} 
+                layoutId={`product-card-${product.id}`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
                 className="glass" 
                 style={{
                   borderRadius: '24px',
@@ -202,9 +208,26 @@ const Catalog = () => {
       </div>
 
       {/* Product Detail Modal */}
+      <AnimatePresence>
       {selectedProduct && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={() => setSelectedProduct(null)}>
-          <div onClick={(e) => e.stopPropagation()} className="glass animate-fade-in-up" style={{ width: '100%', maxWidth: '650px', borderRadius: '24px', overflow: 'hidden', position: 'relative', border: '1px solid rgba(255,255,255,0.1)', background: 'var(--surface-color)' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          
+          {/* Animated blurred backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(12px)' }}
+            onClick={() => setSelectedProduct(null)}
+          />
+
+          <motion.div 
+            layoutId={`product-card-${selectedProduct.id}`}
+            onClick={(e) => e.stopPropagation()} 
+            className="glass" 
+            style={{ width: '100%', maxWidth: '650px', borderRadius: '24px', overflow: 'hidden', position: 'relative', border: '1px solid rgba(255,255,255,0.1)', zIndex: 1 }}
+          >
              <button onClick={() => setSelectedProduct(null)} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', zIndex: 10, background: 'rgba(0,0,0,0.5)', padding: '0.5rem', borderRadius: '50%', color: 'white', display: 'flex', border: 'none', cursor: 'pointer', transition: 'var(--transition)' }}><X size={20} /></button>
              
              {/* Header Image Area */}
@@ -273,9 +296,10 @@ const Catalog = () => {
                   </button>
                 </div>
              </div>
-          </div>
+          </motion.div>
         </div>
       )}
+      </AnimatePresence>
 
     </div>
   );
