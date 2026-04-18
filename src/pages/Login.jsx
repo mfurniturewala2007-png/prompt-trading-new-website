@@ -34,12 +34,24 @@ const Login = () => {
       setSuccess(true);
       setFormData({ name: '', phone_number: '', email: '' });
     } catch (err) {
-      console.error('Registration Error:', err);
       if (err.code === '23505') {
-        setError('An account with this email already exists.');
-      } else {
-        setError('Failed to register. Please try again or contact support.');
+        // User already exists - log them in instead!
+        const { data: existingUser } = await supabase
+          .from('customers')
+          .select()
+          .eq('email', formData.email)
+          .single();
+          
+        if (existingUser) {
+          login(existingUser);
+          setSuccess(true);
+          setFormData({ name: '', phone_number: '', email: '' });
+          return;
+        }
       }
+      
+      console.error('Registration/Login Error:', err);
+      setError('Failed to process. Please try again or contact support.');
     } finally {
       setLoading(false);
     }

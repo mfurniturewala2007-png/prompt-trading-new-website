@@ -109,7 +109,6 @@ const Catalog = () => {
             {filteredProducts.length > 0 ? filteredProducts.map(product => (
               <motion.div 
                 key={product.id} 
-                layoutId={`product-card-${product.id}`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
@@ -223,7 +222,10 @@ const Catalog = () => {
           />
 
           <motion.div 
-            layoutId={`product-card-${selectedProduct.id}`}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()} 
             className="glass" 
             style={{ width: '100%', maxWidth: '650px', borderRadius: '24px', overflow: 'hidden', position: 'relative', border: '1px solid rgba(255,255,255,0.1)', zIndex: 1 }}

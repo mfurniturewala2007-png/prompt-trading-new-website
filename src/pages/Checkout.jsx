@@ -13,7 +13,11 @@ const Checkout = () => {
   const [enquiryEmail, setEnquiryEmail] = useState('prompttradingsales2@gmail.com');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [guestInfo, setGuestInfo] = useState({ name: '', email: '', phone: '' });
+  const [guestInfo, setGuestInfo] = useState({ 
+    name: user?.name || '', 
+    email: user?.email || '', 
+    phone: user?.phone || '' 
+  });
 
   // Fetch the admin enquiry email from settings
   useEffect(() => {
@@ -25,10 +29,10 @@ const Checkout = () => {
   }, []);
 
   const handleSendEnquiry = async () => {
-    // Validation: Require either registered user OR guest name/email
-    const senderName = isRegistered ? user.name : guestInfo.name;
-    const senderEmail = isRegistered ? user.email : guestInfo.email;
-    const senderPhone = isRegistered ? user.phone : guestInfo.phone;
+    // Validation: Always use the guestInfo form exactly as filled/edited
+    const senderName = guestInfo.name;
+    const senderEmail = guestInfo.email;
+    const senderPhone = guestInfo.phone;
 
     if (cartItems.length === 0) return;
     if (!senderName || !senderEmail) {
@@ -167,12 +171,6 @@ const Checkout = () => {
               </span>
             </div>
 
-            {isRegistered ? (
-              <div style={{ background: 'rgba(130, 211, 222, 0.05)', border: '1px solid rgba(130, 211, 222, 0.15)', borderRadius: '12px', padding: '1rem', marginBottom: '1.5rem', fontSize: '0.85rem' }}>
-                <strong style={{ color: 'var(--primary-color)', display: 'block', marginBottom: '0.25rem' }}>Sending as:</strong>
-                <span style={{ color: 'var(--text-secondary)' }}>{user.name} — {user.email}</span>
-              </div>
-            ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
                 <h3 style={{ fontSize: '1rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Contact Information</h3>
                 <input 
@@ -200,7 +198,6 @@ const Checkout = () => {
                   style={{ background: 'rgba(255,255,255,0.03)', fontSize: '0.9rem' }}
                 />
               </div>
-            )}
 
             <button
               onClick={handleSendEnquiry}
@@ -251,7 +248,7 @@ const Checkout = () => {
               </div>
               <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Enquiry Sent!</h2>
               <p style={{ color: 'var(--text-secondary)', marginBottom: '2.5rem', lineHeight: 1.6 }}>
-                Your request has been received. Our procurement team will review the availability of the selected tools and contact you at <strong>{isRegistered ? user.email : guestInfo.email}</strong> shortly.
+                Your request has been received. Our procurement team will review the availability of the selected tools and contact you at <strong>{guestInfo.email}</strong> shortly.
               </p>
               <button 
                 onClick={() => setIsSuccess(false)}
