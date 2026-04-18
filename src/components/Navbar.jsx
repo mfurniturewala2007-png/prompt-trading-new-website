@@ -27,8 +27,8 @@ const Navbar = () => {
 
   return (
     <header className={`navbar ${isScrolled ? 'scrolled glass' : ''}`}>
-      <div className="container nav-container">
-        <Link to="/" className="logo-link" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+      <div className="nav-container">
+        <Link to="/" className="logo-link">
           <div className="logo-box">
             <img src="/logo.jpg" alt="Prompt Trading Logo" className="logo-image" />
           </div>
