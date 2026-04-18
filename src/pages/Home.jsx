@@ -202,10 +202,22 @@ const Home = () => {
                 }}
               >
                 {brand.image_url ? (
-                  <img src={brand.image_url} alt={brand.name} style={{ width: '80%', height: '80%', objectFit: 'contain', filter: 'grayscale(100%) contrast(150%)', transition: 'filter 0.3s' }} 
-                       onMouseEnter={(e) => e.currentTarget.style.filter = 'grayscale(0%) contrast(100%)'} 
-                       onMouseLeave={(e) => e.currentTarget.style.filter = 'grayscale(100%) contrast(150%)'} 
-                  />
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <img 
+                      src={brand.image_url} 
+                      alt={brand.name} 
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        const fallback = document.createElement('h3');
+                        fallback.innerText = brand.name;
+                        fallback.style.cssText = "font-size: 1.35rem; color: var(--text-secondary); letter-spacing: 1px; font-weight: 900; text-transform: uppercase; margin: 0;";
+                        e.currentTarget.parentNode.appendChild(fallback);
+                      }}
+                      style={{ width: '85%', height: '85%', objectFit: 'contain', filter: 'grayscale(100%) contrast(120%)', transition: 'var(--transition)' }} 
+                      onMouseEnter={(e) => e.currentTarget.style.filter = 'grayscale(0%) contrast(100%)'} 
+                      onMouseLeave={(e) => e.currentTarget.style.filter = 'grayscale(100%) contrast(120%)'} 
+                    />
+                  </div>
                 ) : (
                   <h3 style={{ 
                     fontSize: '1.35rem', 

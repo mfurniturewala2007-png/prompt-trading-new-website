@@ -429,8 +429,24 @@ const Admin = () => {
             <h2 style={{ marginBottom: '2rem' }}>{editingBrandId ? 'Edit Brand' : 'Add Brand'}</h2>
             <form onSubmit={handleSaveBrand} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <input required type="text" className="form-input" placeholder="Brand Name" value={brandForm.name} onChange={e => setBrandForm({...brandForm, name: e.target.value})} />
-              <textarea required className="form-input" rows="3" placeholder="Description of the brand relationship" value={brandForm.description} onChange={e => setBrandForm({...brandForm, description: e.target.value})} />
-              <input type="text" className="form-input" placeholder="Image URL (Logo link)" value={brandForm.image_url} onChange={e => setBrandForm({...brandForm, image_url: e.target.value})} />
+              <textarea required className="form-input" rows="2" placeholder="Description (Optional)" value={brandForm.description} onChange={e => setBrandForm({...brandForm, description: e.target.value})} />
+              
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-dim)', marginBottom: '0.5rem' }}>Logo URL (Must be a direct link to an image file)</label>
+                <input type="text" className="form-input" placeholder="https://example.com/logo.png" value={brandForm.image_url} onChange={e => setBrandForm({...brandForm, image_url: e.target.value})} />
+              </div>
+
+              {brandForm.image_url && (
+                <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>Preview:</span>
+                  <img src={brandForm.image_url} alt="Preview" style={{ maxHeight: '80px', maxWidth: '100%', objectFit: 'contain' }} 
+                       onError={(e) => {
+                         e.target.style.display = 'none';
+                         alert("Logo preview failed! Please ensure the URL is a direct link to an image (ending in .png, .jpg, etc).");
+                       }} />
+                </div>
+              )}
+
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
                 <button type="button" className="btn btn-outline" onClick={() => setIsBrandModalOpen(false)}>Cancel</button>
                 <button type="submit" className="btn btn-primary">Save Brand</button>
