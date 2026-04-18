@@ -41,6 +41,7 @@ const Navbar = () => {
         </nav>
 
         <div className="nav-actions">
+          <Link to="/login" className="btn btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: '0.8rem', borderRadius: '4px', border: '1px solid var(--primary-color)' }}>Register</Link>
           <Link to="/checkout" className="cart-btn">
             <ShoppingCart size={24} />
             {getCartCount() > 0 && <span className="cart-badge">{getCartCount()}</span>}
@@ -57,6 +58,7 @@ const Navbar = () => {
         <Link to="/about">About Us</Link>
         <Link to="/brands">Authorized Brands</Link>
         <Link to="/catalog">Products</Link>
+        <Link to="/login" style={{ color: 'var(--primary-color)', fontWeight: '700' }}>Login / Register</Link>
       </div>
     </header>
   );

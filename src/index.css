@@ -1,36 +1,36 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Forge & Slate Design System (Stitch) */
-  --primary-color: #82d3de;
-  --primary-dark: #006972;
-  --primary-light: #9ff0fb;
-  --accent-color: #f7ba89; /* Precision highlight */
+  /* Heavy-Duty Industrial Design System */
+  --primary-color: #f97316; /* Safety Orange */
+  --primary-dark: #c2410c;
+  --primary-light: #ffedd5;
+  --accent-color: #ef4444; /* Precision red */
   
-  /* Neutral Palette - Machined Greys */
-  --bg-color: #0f1418;
-  --surface-color: #171c20;
-  --surface-container: #1b2024;
-  --surface-bright: #353a3e;
+  /* Neutral Palette - Carbon & Steel */
+  --bg-color: #09090b;
+  --surface-color: #18181b;
+  --surface-container: #27272a;
+  --surface-bright: #3f3f46;
   
-  --text-primary: #dfe3e8;
-  --text-secondary: #bfc8ca;
-  --text-dim: #8a9295;
+  --text-primary: #f8fafc;
+  --text-secondary: #a1a1aa;
+  --text-dim: #71717a;
   
-  --border-color: rgba(138, 146, 149, 0.15); /* Ghost Border */
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --border-color: rgba(255, 255, 255, 0.08); /* Ghost Border */
+  --glass-border: rgba(255, 255, 255, 0.05);
 
-  /* UI Tokens */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  /* UI Tokens - Hard Edges */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
   
-  --shadow-diffused: 0 40px 60px -20px rgba(0, 0, 0, 0.3);
-  --shadow-glow: 0 0 20px rgba(130, 211, 222, 0.2);
+  --shadow-diffused: 0 40px 60px -20px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 0 20px rgba(249, 115, 22, 0.15);
   
-  /* Animation Tokens */
-  --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  /* Solid Transitions */
+  --transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
   --container-width: 1400px;
 }
 
@@ -51,7 +51,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Roboto', sans-serif;
   line-height: 1.2;
   font-weight: 700;
   color: var(--text-primary);

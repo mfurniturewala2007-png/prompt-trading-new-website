@@ -8,6 +8,7 @@ import Brands from './pages/Brands';
 import Catalog from './pages/Catalog';
 import Checkout from './pages/Checkout';
 import Admin from './pages/Admin';
+import Login from './pages/Login';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </main>
       <Footer />

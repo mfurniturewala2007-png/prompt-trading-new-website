@@ -38,3 +38,12 @@ CREATE TABLE site_settings (
 -- ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 -- CREATE POLICY "Allow public read access" on products for select using (true);
 -- (Repeat for other tables)
+
+-- 4. Create the customers table (for user registration)
+CREATE TABLE customers (
+  id uuid default gen_random_uuid() primary key,
+  name text not null,
+  phone_number text not null,
+  email text unique not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);

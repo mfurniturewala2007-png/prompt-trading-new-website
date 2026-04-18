@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Shield, Zap, Box, ArrowRight, Award, Compass, Globe } from 'lucide-react';
+import { supabase } from '../supabase';
 
 const Home = () => {
+  const [brands, setBrands] = useState([]);
+
+  useEffect(() => {
+    const fetchBrands = async () => {
+      const { data } = await supabase.from('brands').select('*');
+      if (data) setBrands(data);
+    };
+    fetchBrands();
+  }, []);
+
   return (
     <div style={{ background: 'var(--bg-color)', color: 'var(--text-primary)' }}>
-      {/* Hero Section */}
+      {/* Heavy-Duty Hero Section */}
       <section style={{ 
         minHeight: '100vh', 
         display: 'flex', 
         alignItems: 'center', 
-        background: `linear-gradient(rgba(15, 20, 24, 0.7), rgba(15, 20, 24, 0.9)), url('/premium_tool_hero_1776492036905.png')`,
+        background: `linear-gradient(rgba(9, 9, 11, 0.8), rgba(9, 9, 11, 0.95)), url('/rugged_tools_hero_1776493354746.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         position: 'relative',
@@ -166,47 +177,53 @@ const Home = () => {
             </Link>
           </div>
 
-          {/* Screenshot Brands Grid */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.5rem' }}>
-            {[
-              "Snap-on", "Blue-Point", "BAHCO", "WILLIAMS", "Sioux", 
-              "STANLEY", "DEWALT", "BLACK&DECKER", "LENOX", "LINDSTRÖM", 
-              "GROZ", "KNIPEX", "Wera", "RENNSTEIG", "MUVTONS", 
-              "Lubeco", "CRC"
-            ].map((brand, i) => (
+            {brands.length > 0 ? brands.map((brand, i) => (
               <motion.div 
-                key={i}
+                key={brand.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.03 }}
-                whileHover={{ y: -5, borderColor: 'rgba(130, 211, 222, 0.4)', background: 'rgba(130, 211, 222, 0.05)' }}
+                transition={{ delay: i * 0.05 }}
+                whileHover={{ y: -5, borderColor: 'var(--primary-color)' }}
                 className="glass"
                 style={{
-                  height: '120px',
-                  borderRadius: '16px',
+                  height: '140px',
+                  borderRadius: 'var(--radius-sm)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
-                  border: '1px solid rgba(255,255,255,0.05)',
-                  background: 'rgba(255,255,255,0.02)',
-                  transition: 'background 0.3s ease, border-color 0.3s ease',
+                  border: '2px solid rgba(255,255,255,0.05)',
+                  background: 'var(--surface-color)',
+                  transition: 'var(--transition)',
                   padding: '1.5rem',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  overflow: 'hidden'
                 }}
               >
-                <h3 style={{ 
-                  fontSize: brand.length > 10 ? '1.1rem' : '1.35rem', 
-                  color: 'var(--text-primary)', 
-                  letterSpacing: '1px', 
-                  fontWeight: 800,
-                  textTransform: 'uppercase',
-                  margin: 0
-                }}>
-                  {brand}
-                </h3>
+                {brand.image_url ? (
+                  <img src={brand.image_url} alt={brand.name} style={{ width: '80%', height: '80%', objectFit: 'contain', filter: 'grayscale(100%) contrast(150%)', transition: 'filter 0.3s' }} 
+                       onMouseEnter={(e) => e.currentTarget.style.filter = 'grayscale(0%) contrast(100%)'} 
+                       onMouseLeave={(e) => e.currentTarget.style.filter = 'grayscale(100%) contrast(150%)'} 
+                  />
+                ) : (
+                  <h3 style={{ 
+                    fontSize: '1.35rem', 
+                    color: 'var(--text-secondary)', 
+                    letterSpacing: '1px', 
+                    fontWeight: 900,
+                    textTransform: 'uppercase',
+                    margin: 0
+                  }}>
+                    {brand.name}
+                  </h3>
+                )}
               </motion.div>
-            ))}
+            )) : (
+              <div style={{ gridColumn: '1 / -1', padding: '3rem', textAlign: 'center', border: '1px dashed var(--border-color)', color: 'var(--text-dim)' }}>
+                Waiting for manufacturer data sync... Please configure brands in Admin Panel.
+              </div>
+            )}
           </div>
         </div>
       </section>
