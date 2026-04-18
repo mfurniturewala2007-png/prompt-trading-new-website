@@ -44,7 +44,7 @@ const Catalog = () => {
           <span className="badge" style={{ color: 'var(--primary-color)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '2px', display: 'block', marginBottom: '1rem' }}>Inventory</span>
           <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-1.5px', margin: 0 }}>Product <span className="text-gradient">Catalog</span></h1>
         </div>
-        <div style={{ position: 'relative', minWidth: '320px' }}>
+        <div style={{ position: 'relative', flex: 1, minWidth: '280px', width: '100%' }}>
           <Search size={20} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
           <input 
             type="text" 
