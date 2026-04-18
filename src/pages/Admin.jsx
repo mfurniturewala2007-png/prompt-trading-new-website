@@ -7,6 +7,7 @@ const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const fileInputRef = useRef(null);
+  const brandFileInputRef = useRef(null);
   
   const [activeTab, setActiveTab] = useState('products'); // 'products', 'brands', 'settings'
   const [loading, setLoading] = useState(true);
@@ -91,7 +92,7 @@ const Admin = () => {
     }
   };
 
-  const handleFileUpload = (e) => {
+  const handleProductFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -106,13 +107,12 @@ const Admin = () => {
         
         if (data.length === 0) return alert("The Excel file is empty!");
 
-        alert(`Found ${data.length} items in the Excel file. Attempting to upload...`);
+        alert(`Found ${data.length} products in the Excel file. Attempting to upload...`);
 
-        // Format and map data specifically to match the Excel sheet headers provided
         const formattedData = data.map(item => ({
           name: item['Tool Name'] || item.name || item.Name || item['Product Name'] || 'Unknown Product',
           part_number: String(item['Part Number'] || item.part_number || item['Part number'] || ''),
-          price: parseFloat(item.price || item.Price || item.Cost || 0) || 0, // Fallback to 0 if no price column exists
+          price: parseFloat(item.price || item.Price || item.Cost || 0) || 0,
           quantity_in_stock: parseInt(item['Quantity in Stock'] || item.quantity || item.Quantity || 0) || 0,
           brand: item.Brand || item.brand || 'Unknown Brand',
           sub_brand: item['Sub-Brand'] || item.sub_brand || item.subbrand || '',
@@ -130,13 +130,52 @@ const Admin = () => {
         }
       } catch (err) {
         console.error(err);
-        alert("Failed to read the Excel file. Please ensure it's a valid .xlsx or .csv format.");
+        alert("Failed to read the Excel file.");
       }
       if (fileInputRef.current) fileInputRef.current.value = "";
     };
     reader.readAsBinaryString(file);
   };
 
+  const handleBrandFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (evt) => {
+      try {
+        const bstr = evt.target.result;
+        const wb = XLSX.read(bstr, { type: 'binary' });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws);
+        
+        if (data.length === 0) return alert("The Excel file is empty!");
+
+        alert(`Found ${data.length} brands in the Excel file. Attempting to upload...`);
+
+        const formattedData = data.map(item => ({
+          name: item['Brand Name'] || item.name || item.Name || 'Unknown Brand',
+          description: item.Description || item.description || '',
+          image_url: item['Logo URL'] || item['Image URL'] || item.image_url || ''
+        }));
+
+        const { error } = await supabase.from('brands').insert(formattedData);
+        if (error) {
+           console.error(error);
+           alert("Error uploading brands: " + error.message);
+        } else {
+           alert(`Successfully imported ${formattedData.length} brands!`);
+           fetchAllData();
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Failed to read the Excel file.");
+      }
+      if (brandFileInputRef.current) brandFileInputRef.current.value = "";
+    };
+    reader.readAsBinaryString(file);
+  };
   /* ---- Brands Logic ---- */
   const handleOpenBrandModal = (brand = null) => {
     if (brand) {
@@ -256,7 +295,7 @@ const Admin = () => {
                     type="file" 
                     accept=".xlsx, .xls, .csv" 
                     ref={fileInputRef} 
-                    onChange={handleFileUpload} 
+                    onChange={handleProductFileUpload} 
                     style={{ display: 'none' }} 
                   />
                   <button className="btn btn-outline" onClick={() => fileInputRef.current?.click()}>
@@ -301,7 +340,19 @@ const Admin = () => {
             <div className="glass animate-fade-in-up" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem', background: 'var(--surface-color)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
                 <h2 style={{ fontSize: '1.25rem' }}>Authorized Brands</h2>
-                <button className="btn btn-primary" onClick={() => handleOpenBrandModal()}><PlusCircle size={20} /> Add Brand</button>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <input 
+                    type="file" 
+                    accept=".xlsx, .xls, .csv" 
+                    ref={brandFileInputRef} 
+                    onChange={handleBrandFileUpload} 
+                    style={{ display: 'none' }} 
+                  />
+                  <button className="btn btn-outline" onClick={() => brandFileInputRef.current?.click()}>
+                    <UploadCloud size={20} /> Import Excel
+                  </button>
+                  <button className="btn btn-primary" onClick={() => handleOpenBrandModal()}><PlusCircle size={20} /> Add Brand</button>
+                </div>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1.5rem' }}>
