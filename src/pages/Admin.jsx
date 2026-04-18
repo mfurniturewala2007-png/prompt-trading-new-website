@@ -210,8 +210,16 @@ const Admin = () => {
         const { data: existingProducts } = await supabase.from('products').select('*');
         const existingMap = new Map((existingProducts || []).map(p => [p.part_number, p]));
 
-        const upsertData = data.map(item => {
-          const part_number = String(item['Part Number'] || item.part_number || item['Part number'] || '');
+        const upsertDataMap = new Map();
+
+        data.forEach(item => {
+          let part_number = String(item['Part Number'] || item.part_number || item['Part number'] || '').trim();
+          
+          // If the item in Excel has no part number, give it a random unique one so it doesn't collide
+          if (!part_number) {
+            part_number = 'UNK-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+          }
+
           const existing = existingMap.get(part_number);
 
           const getName = () => item['Tool Name'] || item.name || item.Name || item['Product Name'];
@@ -222,9 +230,11 @@ const Admin = () => {
           const getCat = () => item['Tool Category'] || item.category || item.Category;
           const getImg = () => item.image_url || item['Image URL'] || item.imageUrl;
 
+          let recordObj;
+
           if (existing) {
             // Update existing record
-            return {
+            recordObj = {
               id: existing.id,
               part_number: existing.part_number,
               name: getName() !== undefined ? getName() : existing.name,
@@ -237,7 +247,7 @@ const Admin = () => {
             };
           } else {
             // Insert new record
-            return {
+            recordObj = {
               name: getName() || 'Unknown Product',
               part_number: part_number,
               price: parseFloat(getPrice() || 0) || 0,
@@ -248,7 +258,14 @@ const Admin = () => {
               image_url: getImg() || ''
             };
           }
+
+          // Important: Saving it into a Map keyed by `part_number` means if the Excel sheet 
+          // has two rows with the EXACT SAME Part Number, it will just overwrite the first 
+          // one with the second one instead of trying to upload both and crashing the DB!
+          upsertDataMap.set(part_number, recordObj);
         });
+
+        const upsertData = Array.from(upsertDataMap.values());
 
         // Use upsert matching on ID (for existing) and letting DB generated ID for new ones
         const { error } = await supabase.from('products').upsert(upsertData, { onConflict: 'id' });
