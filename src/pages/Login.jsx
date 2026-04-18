@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, ArrowRight, ShieldCheck, HardHat } from 'lucide-react';
+import { Mail, ArrowRight, ShieldCheck, HardHat, User, Phone } from 'lucide-react';
 import { supabase } from '../supabase';
 import { useUser } from '../context/UserContext';
 
