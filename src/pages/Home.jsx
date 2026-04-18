@@ -153,47 +153,58 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Categories - Tonal Layering */}
+      {/* Brands We Carry - Premium Grid */}
       <section className="section-py">
         <div className="container">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '4rem', flexWrap: 'wrap', gap: '2rem' }}>
             <div>
-              <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Core Categories</h2>
-              <p style={{ color: 'var(--text-dim)' }}>Built for endurance and high-capacity engineering.</p>
+              <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Brands We Carry</h2>
+              <p style={{ color: 'var(--text-dim)' }}>Authorized distributor for the world's most trusted manufacturing hardware.</p>
             </div>
-            <Link to="/catalog" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, color: 'var(--primary-color)' }}>
-              Full Catalog <ArrowRight size={18} />
+            <Link to="/brands" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, color: 'var(--primary-color)' }}>
+              Explore Brand Network <ArrowRight size={18} />
             </Link>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+          {/* Screenshot Brands Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.5rem' }}>
             {[
-              { title: "Power Systems", count: "45 Items" },
-              { title: "Precision Hand Tools", count: "120 Items" },
-              { title: "Heavy Machinery", count: "12 Items" },
-              { title: "Safety Gear", count: "80 Items" }
-            ].map((cat, i) => (
+              "Snap-on", "Blue-Point", "BAHCO", "WILLIAMS", "Sioux", 
+              "STANLEY", "DEWALT", "BLACK&DECKER", "LENOX", "LINDSTRÖM", 
+              "GROZ", "KNIPEX", "Wera", "RENNSTEIG", "MUVTONS", 
+              "Lubeco", "CRC"
+            ].map((brand, i) => (
               <motion.div 
                 key={i}
-                whileHover={{ y: -10 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.03 }}
+                whileHover={{ y: -5, borderColor: 'rgba(130, 211, 222, 0.4)', background: 'rgba(130, 211, 222, 0.05)' }}
                 className="glass"
                 style={{
-                  height: '240px',
+                  height: '120px',
                   borderRadius: '16px',
-                  padding: '2rem',
                   display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'flex-end',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   cursor: 'pointer',
-                  overflow: 'hidden',
-                  position: 'relative'
+                  border: '1px solid rgba(255,255,255,0.05)',
+                  background: 'rgba(255,255,255,0.02)',
+                  transition: 'background 0.3s ease, border-color 0.3s ease',
+                  padding: '1.5rem',
+                  textAlign: 'center'
                 }}
               >
-                <div style={{ position: 'absolute', top: '-10%', right: '-10%', opacity: 0.05 }}>
-                  <Box size={150} />
-                </div>
-                <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '2px', color: 'var(--primary-color)', fontWeight: 800, marginBottom: '0.5rem' }}>{cat.count}</p>
-                <h3 style={{ fontSize: '1.75rem' }}>{cat.title}</h3>
+                <h3 style={{ 
+                  fontSize: brand.length > 10 ? '1.1rem' : '1.35rem', 
+                  color: 'var(--text-primary)', 
+                  letterSpacing: '1px', 
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  margin: 0
+                }}>
+                  {brand}
+                </h3>
               </motion.div>
             ))}
           </div>
