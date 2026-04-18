@@ -75,6 +75,8 @@ const Checkout = () => {
           '89gOARMjgGuKOT1wPEMa3'
         );
       } catch (emailErr) {
+        // TEMPORARY DEBUG ALERT
+        alert("EmailJS Failed. Tell your AI this exact error: " + (emailErr?.text || emailErr?.message || JSON.stringify(emailErr)));
         console.warn("Email notification failed (keys probably not set), but inquiry is saved in DB.", emailErr);
       }
 
