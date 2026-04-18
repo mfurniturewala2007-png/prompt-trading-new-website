@@ -78,7 +78,7 @@ const Checkout = () => {
       clearCart();
     } catch (err) {
       console.error('Enquiry Error:', err);
-      alert('Failed to send enquiry. Please try again or contact us directly.');
+      alert('Failed to send enquiry. Error: ' + (err?.message || JSON.stringify(err)));
     } finally {
       setIsSubmitting(false);
     }
