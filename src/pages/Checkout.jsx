@@ -13,6 +13,7 @@ const Checkout = () => {
   const [enquiryEmail, setEnquiryEmail] = useState('mfurniturewala2007@gmail.com');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [guestInfo, setGuestInfo] = useState({ name: '', email: '', phone: '' });
 
   // Fetch the admin enquiry email from settings
   useEffect(() => {
@@ -24,40 +25,55 @@ const Checkout = () => {
   }, []);
 
   const handleSendEnquiry = async () => {
-    if (cartItems.length === 0 || !isRegistered) return;
+    // Validation: Require either registered user OR guest name/email
+    const senderName = isRegistered ? user.name : guestInfo.name;
+    const senderEmail = isRegistered ? user.email : guestInfo.email;
+    const senderPhone = isRegistered ? user.phone : guestInfo.phone;
+
+    if (cartItems.length === 0) return;
+    if (!senderName || !senderEmail) {
+      alert("Please provide your Name and Email so we can get back to you.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       // 1. Save to Supabase enquiries table
       const { error: dbError } = await supabase.from('enquiries').insert([{
-        customer_name: user.name,
-        customer_email: user.email,
-        customer_phone: user.phone || '',
+        customer_name: senderName,
+        customer_email: senderEmail,
+        customer_phone: senderPhone || '',
         items: cartItems,
         total_amount: getCartTotal()
       }]);
 
       if (dbError) throw dbError;
 
-      // 2. Send via EmailJS (Gmail-based)
-      // NOTE: You need to replace these placeholders with your actual EmailJS keys
-      const templateParams = {
-        to_email: enquiryEmail,
-        customer_name: user.name,
-        customer_email: user.email,
-        customer_phone: user.phone || 'N/A',
-        total_amount: `₹${getCartTotal().toLocaleString('en-IN')}`,
-        items_list: cartItems.map(item => 
-          `${item.name} (${item.brand}) - Qty: ${item.quantity} - ₹${(item.price * item.quantity).toLocaleString('en-IN')}`
-        ).join('\n')
-      };
+      // 2. Attempt to send via EmailJS (Gmail-based)
+      // Safety: We wrap this in a separate try/catch so missing keys don't block the user
+      try {
+        const templateParams = {
+          to_email: enquiryEmail,
+          customer_name: senderName,
+          customer_email: senderEmail,
+          customer_phone: senderPhone || 'N/A',
+          total_amount: `₹${getCartTotal().toLocaleString('en-IN')}`,
+          items_list: cartItems.map(item => 
+            `${item.name} (${item.brand}) - Qty: ${item.quantity} - ₹${(item.price * item.quantity).toLocaleString('en-IN')}`
+          ).join('\n')
+        };
 
-      await emailjs.send(
-        'YOUR_SERVICE_ID', 
-        'YOUR_TEMPLATE_ID', 
-        templateParams, 
-        'YOUR_PUBLIC_KEY'
-      );
+        // NOTE: Replace these with your actual EmailJS IDs in your EmailJS dashboard
+        await emailjs.send(
+          'YOUR_SERVICE_ID', 
+          'YOUR_TEMPLATE_ID', 
+          templateParams, 
+          'YOUR_PUBLIC_KEY'
+        );
+      } catch (emailErr) {
+        console.warn("Email notification failed (keys probably not set), but inquiry is saved in DB.", emailErr);
+      }
 
       setIsSuccess(true);
       clearCart();
@@ -152,22 +168,50 @@ const Checkout = () => {
               </span>
             </div>
 
-            {isRegistered && (
+            {isRegistered ? (
               <div style={{ background: 'rgba(130, 211, 222, 0.05)', border: '1px solid rgba(130, 211, 222, 0.15)', borderRadius: '12px', padding: '1rem', marginBottom: '1.5rem', fontSize: '0.85rem' }}>
                 <strong style={{ color: 'var(--primary-color)', display: 'block', marginBottom: '0.25rem' }}>Sending as:</strong>
                 <span style={{ color: 'var(--text-secondary)' }}>{user.name} — {user.email}</span>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
+                <h3 style={{ fontSize: '1rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Contact Information</h3>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  placeholder="Your Full Name *" 
+                  value={guestInfo.name} 
+                  onChange={e => setGuestInfo({...guestInfo, name: e.target.value})}
+                  style={{ background: 'rgba(255,255,255,0.03)', fontSize: '0.9rem' }}
+                />
+                <input 
+                  type="email" 
+                  className="form-input" 
+                  placeholder="Email Address *" 
+                  value={guestInfo.email} 
+                  onChange={e => setGuestInfo({...guestInfo, email: e.target.value})}
+                  style={{ background: 'rgba(255,255,255,0.03)', fontSize: '0.9rem' }}
+                />
+                <input 
+                  type="tel" 
+                  className="form-input" 
+                  placeholder="Phone Number (Optional)" 
+                  value={guestInfo.phone} 
+                  onChange={e => setGuestInfo({...guestInfo, phone: e.target.value})}
+                  style={{ background: 'rgba(255,255,255,0.03)', fontSize: '0.9rem' }}
+                />
               </div>
             )}
 
             <button
               onClick={handleSendEnquiry}
               className="btn btn-primary"
-              disabled={isSubmitting || !isRegistered}
+              disabled={isSubmitting}
               style={{ 
                 width: '100%', padding: '1rem', fontSize: '1rem', fontWeight: 700, 
                 display: 'flex', alignItems: 'center', justifyContent: 'center', 
                 gap: '0.75rem', borderRadius: '8px',
-                opacity: (isSubmitting || !isRegistered) ? 0.6 : 1
+                opacity: (isSubmitting) ? 0.6 : 1
               }}
             >
               <Send size={20} className={isSubmitting ? 'animate-pulse' : ''} />
@@ -178,9 +222,9 @@ const Checkout = () => {
             </p>
 
             {!isRegistered && (
-              <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(249,115,22,0.05)', borderRadius: '12px', border: '1px solid rgba(249,115,22,0.15)', fontSize: '0.85rem', textAlign: 'center' }}>
-                <Link to="/login" style={{ color: 'var(--primary-color)', fontWeight: 700 }}>Register first</Link>
-                <span style={{ color: 'var(--text-dim)' }}> to auto-include your details in the enquiry.</span>
+              <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '0.85rem', textAlign: 'center' }}>
+                <span style={{ color: 'var(--text-dim)' }}>Already have an account? </span>
+                <Link to="/login" style={{ color: 'var(--primary-color)', fontWeight: 700 }}>Log in</Link>
               </div>
             )}
           </div>
@@ -208,7 +252,7 @@ const Checkout = () => {
               </div>
               <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Enquiry Sent!</h2>
               <p style={{ color: 'var(--text-secondary)', marginBottom: '2.5rem', lineHeight: 1.6 }}>
-                Your request has been received. Our procurement team will review the availability of the selected tools and contact you at <strong>{user.email}</strong> shortly.
+                Your request has been received. Our procurement team will review the availability of the selected tools and contact you at <strong>{isRegistered ? user.email : guestInfo.email}</strong> shortly.
               </p>
               <button 
                 onClick={() => setIsSuccess(false)}
