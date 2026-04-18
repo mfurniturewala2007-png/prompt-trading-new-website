@@ -34,12 +34,12 @@ const Catalog = () => {
   });
 
   return (
-    <div className="container" style={{ paddingTop: '10rem', paddingBottom: '8rem', position: 'relative' }}>
+    <div className="container catalog-page" style={{ paddingTop: '8rem', paddingBottom: '8rem', position: 'relative' }}>
       {/* Ambient background orbs for true glassmorphism refraction */}
       <div style={{ position: 'absolute', top: '5%', left: '-5%', width: '600px', height: '600px', background: 'var(--primary-color)', borderRadius: '50%', filter: 'blur(200px)', opacity: 0.15, zIndex: -1, pointerEvents: 'none' }} />
       <div style={{ position: 'absolute', bottom: '10%', right: '-5%', width: '500px', height: '500px', background: '#3b82f6', borderRadius: '50%', filter: 'blur(200px)', opacity: 0.1, zIndex: -1, pointerEvents: 'none' }} />
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '4rem', flexWrap: 'wrap', gap: '2rem' }}>
+      <div className="catalog-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <span className="badge" style={{ color: 'var(--primary-color)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '2px', display: 'block', marginBottom: '1rem' }}>Inventory</span>
           <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-1.5px', margin: 0 }}>Product <span className="text-gradient">Catalog</span></h1>
@@ -81,8 +81,8 @@ const Catalog = () => {
           
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             <select 
-              className="form-input" 
-              style={{ width: 'auto', minWidth: '180px', height: '40px', background: 'var(--bg-color)', fontSize: '0.9rem' }}
+              className="form-input catalog-filter-select" 
+              style={{ width: 'auto', height: '40px', background: 'var(--bg-color)', fontSize: '0.9rem' }}
               value={selectedCategory}
               onChange={e => setSelectedCategory(e.target.value)}
             >
@@ -91,8 +91,8 @@ const Catalog = () => {
             </select>
 
             <select 
-              className="form-input" 
-              style={{ width: 'auto', minWidth: '180px', height: '40px', background: 'var(--bg-color)', fontSize: '0.9rem' }}
+              className="form-input catalog-filter-select" 
+              style={{ width: 'auto', height: '40px', background: 'var(--bg-color)', fontSize: '0.9rem' }}
               value={selectedBrand}
               onChange={e => setSelectedBrand(e.target.value)}
             >
