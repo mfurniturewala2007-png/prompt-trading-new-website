@@ -64,12 +64,11 @@ const Checkout = () => {
           ).join('\n')
         };
 
-        // NOTE: Replace these with your actual EmailJS IDs in your EmailJS dashboard
         await emailjs.send(
-          'YOUR_SERVICE_ID', 
-          'YOUR_TEMPLATE_ID', 
+          'service_teaui8j', 
+          'template_myo8xta', 
           templateParams, 
-          'YOUR_PUBLIC_KEY'
+          '89gOARMjgGuKOT1wPEMa3'
         );
       } catch (emailErr) {
         console.warn("Email notification failed (keys probably not set), but inquiry is saved in DB.", emailErr);
