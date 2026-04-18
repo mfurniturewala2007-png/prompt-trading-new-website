@@ -10,7 +10,7 @@ import emailjs from '@emailjs/browser';
 const Checkout = () => {
   const { cartItems, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
   const { user, isRegistered } = useUser();
-  const [enquiryEmail, setEnquiryEmail] = useState('mfurniturewala2007@gmail.com');
+  const [enquiryEmail, setEnquiryEmail] = useState('prompttradingsales2@gmail.com');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [guestInfo, setGuestInfo] = useState({ name: '', email: '', phone: '' });

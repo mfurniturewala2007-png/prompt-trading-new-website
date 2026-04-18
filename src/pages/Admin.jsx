@@ -790,7 +790,7 @@ const Admin = () => {
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-dim)', marginBottom: '0.75rem' }}>
                     When a customer sends a cart enquiry from the website, it goes to this email address.
                   </p>
-                  <input type="email" className="form-input" value={settings.enquiry_email || ''} onChange={e => setSettings({...settings, enquiry_email: e.target.value})} placeholder="mfurniturewala2007@gmail.com" />
+                  <input type="email" className="form-input" value={settings.enquiry_email || ''} onChange={e => setSettings({...settings, enquiry_email: e.target.value})} placeholder="prompttradingsales2@gmail.com" />
                 </div>
                 <div style={{ height: '1px', background: 'var(--border-color)' }} />
                 <div>

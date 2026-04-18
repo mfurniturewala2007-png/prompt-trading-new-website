@@ -28,7 +28,7 @@ CREATE TABLE site_settings (
   id uuid default gen_random_uuid() primary key,
   about_text text,
   goal text,
-  enquiry_email text default 'mfurniturewala2007@gmail.com',
+  enquiry_email text default 'prompttradingsales2@gmail.com',
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
