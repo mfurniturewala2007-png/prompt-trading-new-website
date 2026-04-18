@@ -60,28 +60,55 @@ const Footer = () => {
           {/* Contact */}
           <div>
             <h4 style={{ color: 'white', marginBottom: '1.5rem', fontSize: '1.1rem' }}>Headquarters</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', color: 'var(--text-dim)', fontSize: '0.9rem' }}>
-              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                <MapPin size={18} color="var(--primary-color)" style={{ marginTop: '3px', flexShrink: 0 }} />
-                <span>
-                  <strong style={{ color: 'var(--text-secondary)' }}>Camp Office:</strong><br />
-                  Shop No 9 & 20, City Center, 930 Synagogue Street, Camp, Pune – 411001<br /><br />
-                  <strong style={{ color: 'var(--text-secondary)' }}>City Office:</strong><br />
-                  978 Raviwar Peth, Sonyamaruti Chowk, Pune – 411002
-                </span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', color: 'var(--text-dim)', fontSize: '0.9rem' }}>
+              
+              {/* Addresses */}
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                <MapPin size={20} color="var(--primary-color)" style={{ flexShrink: 0, marginTop: '2px' }} />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div>
+                    <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.2rem' }}>Camp Office</strong>
+                    <span style={{ lineHeight: 1.5 }}>Shop No 9 & 20, City Center, 930 Synagogue Street, Camp, Pune – 411001</span>
+                  </div>
+                  <div>
+                    <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.2rem' }}>City Office</strong>
+                    <span style={{ lineHeight: 1.5 }}>978 Raviwar Peth, Sonyamaruti Chowk, Pune – 411002</span>
+                  </div>
+                </div>
               </div>
-              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                <Phone size={18} color="var(--primary-color)" style={{ marginTop: '3px', flexShrink: 0 }} />
-                <span>
-                  <strong style={{ color: 'var(--text-secondary)' }}>Office:</strong> 020 46040218 / +91 96570 78640<br />
-                  <strong style={{ color: 'var(--text-secondary)' }}>Admin:</strong> +91 91300 35948<br />
-                  <strong style={{ color: 'var(--text-secondary)' }}>Sales:</strong> +91 85307 84567 / +91 88888 61772 / +91 88888 97955
-                </span>
+
+              {/* Phones */}
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                <Phone size={20} color="var(--primary-color)" style={{ flexShrink: 0, marginTop: '2px' }} />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
+                  <div style={{ display: 'flex', gap: '1rem' }}>
+                    <span style={{ color: 'var(--text-secondary)', minWidth: '45px' }}>Office</span>
+                    <span>020 46040218, +91 96570 78640</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '1rem' }}>
+                    <span style={{ color: 'var(--text-secondary)', minWidth: '45px' }}>Admin</span>
+                    <span>+91 91300 35948</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '1rem', marginTop: '0.25rem' }}>
+                    <span style={{ color: 'var(--text-secondary)', minWidth: '45px' }}>Sales</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                      <span>+91 85307 84567</span>
+                      <span>+91 88888 61772</span>
+                      <span>+91 88888 97955</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                <Mail size={18} color="var(--primary-color)" style={{ marginTop: '3px', flexShrink: 0 }} />
-                <span>ptc7786@gmail.com<br />zoeb@prompttrading.com</span>
+
+              {/* Emails */}
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                <Mail size={20} color="var(--primary-color)" style={{ flexShrink: 0, marginTop: '2px' }} />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                  <span>ptc7786@gmail.com</span>
+                  <span>zoeb@prompttrading.com</span>
+                </div>
               </div>
+
             </div>
           </div>
 
