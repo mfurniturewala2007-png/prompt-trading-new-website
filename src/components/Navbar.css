@@ -24,6 +24,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .logo-box {
@@ -42,10 +45,14 @@
 .logo-text {
   font-family: 'Manrope', sans-serif;
   font-weight: 800;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   letter-spacing: -0.5px;
   color: var(--text-primary);
   text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
 }
 
 .desktop-nav {
@@ -89,7 +96,19 @@
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Hide Register button on mobile — it lives in the hamburger menu */
+.nav-register-btn {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .nav-register-btn {
+    display: inline-flex;
+  }
 }
 
 .cart-btn {

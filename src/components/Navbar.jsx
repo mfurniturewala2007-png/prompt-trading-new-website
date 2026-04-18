@@ -45,7 +45,7 @@ const Navbar = () => {
 
         <div className="nav-actions">
           {isRegistered ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div className="nav-register-btn" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <span style={{ 
                 display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
                 padding: '0.5rem 1rem', fontSize: '0.8rem', borderRadius: '4px',
@@ -62,7 +62,7 @@ const Navbar = () => {
               </button>
             </div>
           ) : (
-            <Link to="/login" className="btn btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: '0.8rem', borderRadius: '4px', border: '1px solid var(--primary-color)' }}>Register</Link>
+            <Link to="/login" className="btn btn-outline nav-register-btn" style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: '0.8rem', borderRadius: '4px', border: '1px solid var(--primary-color)' }}>Register</Link>
           )}
           <Link to="/checkout" className="cart-btn">
             <ShoppingCart size={24} />
