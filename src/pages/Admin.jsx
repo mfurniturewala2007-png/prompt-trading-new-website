@@ -436,6 +436,16 @@ const Admin = () => {
                 <input type="text" className="form-input" placeholder="https://example.com/logo.png" value={brandForm.image_url} onChange={e => setBrandForm({...brandForm, image_url: e.target.value})} />
               </div>
 
+              <div style={{ padding: '0.75rem', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.2)', borderRadius: 'var(--radius-sm)', fontSize: '0.8rem' }}>
+                <strong style={{ color: '#38bdf8', display: 'block', marginBottom: '0.25rem' }}>How to get the correct link from Google:</strong>
+                <ol style={{ paddingLeft: '1.25rem', color: 'var(--text-secondary)', margin: 0 }}>
+                  <li>Search for the brand logo on Google Images.</li>
+                  <li><strong>Right-click</strong> the image.</li>
+                  <li>Select <strong>"Copy image address"</strong> (NOT "Copy link address").</li>
+                  <li>Paste that link here.</li>
+                </ol>
+              </div>
+
               {brandForm.image_url && (
                 <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>Preview:</span>
