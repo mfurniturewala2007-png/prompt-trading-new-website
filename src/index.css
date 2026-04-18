@@ -507,16 +507,16 @@ main.content {
 }
 
 .bento-box {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
+  background: rgba(50, 150, 255, 0.04); /* Subtle blue tint */
+  border: 1px solid rgba(50, 150, 255, 0.1); /* Subtle blue border glow */
+  backdrop-filter: blur(12px);
   border-radius: 12px;
   color: var(--text-primary);
   padding: 3rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.01), 0 10px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 0 20px rgba(50, 150, 255, 0.02), 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
 /* Specific Wireframe Elements */
@@ -545,8 +545,8 @@ main.content {
 }
 
 .bento-cta-btn {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(50, 150, 255, 0.05); /* Subtle blue tint */
+  border: 1px solid rgba(50, 150, 255, 0.15); /* Subtle blue border */
   color: var(--text-primary);
   border-radius: 8px;
   display: flex;
@@ -558,7 +558,7 @@ main.content {
   letter-spacing: 2px;
   font-size: 0.8rem;
   cursor: pointer;
-  transition: transform 0.3s, background 0.3s, border-color 0.3s;
+  transition: transform 0.3s, background 0.3s, border-color 0.3s, box-shadow 0.3s;
   text-decoration: none;
   z-index: 5;
   backdrop-filter: blur(4px);
@@ -569,6 +569,7 @@ main.content {
   border-color: var(--primary-color);
   color: #000;
   transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 169, 157, 0.3);
 }
 
 .bento-microritm-left {
