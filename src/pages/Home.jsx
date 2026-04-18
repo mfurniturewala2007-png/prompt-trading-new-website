@@ -107,7 +107,7 @@ const Home = () => {
             transition={{ duration: 0.5, delay: 0.7 }}
             className="bento-microritm-right"
           >
-            <Link to="/brands" className="bento-cta-btn" style={{ background: '#FFF', color: '#000', border: '2px solid #0A0A0A' }}>
+            <Link to="/brands" className="bento-cta-btn">
               Certified Brands
             </Link>
           </motion.div>
