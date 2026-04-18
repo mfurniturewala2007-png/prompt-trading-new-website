@@ -484,7 +484,7 @@ const Admin = () => {
         <>
           {/* ---- TAB: PRODUCTS ---- */}
           {activeTab === 'products' && (
-            <div className="glass animate-fade-in-up" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem', background: 'var(--surface-color)' }}>
+            <div className="glass animate-fade-in-up" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <div style={{ position: 'relative', width: '300px' }}>
                   <Search size={18} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
@@ -572,7 +572,7 @@ const Admin = () => {
 
           {/* ---- TAB: BRANDS ---- */}
           {activeTab === 'brands' && (
-            <div className="glass animate-fade-in-up" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem', background: 'var(--surface-color)' }}>
+            <div className="glass animate-fade-in-up" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <h2 style={{ fontSize: '1.25rem' }}>Authorized Brands</h2>
                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
@@ -666,7 +666,7 @@ const Admin = () => {
 
           {/* ---- TAB: CUSTOMERS ---- */}
           {activeTab === 'customers' && (
-            <div className="glass animate-fade-in-up" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem', background: 'var(--surface-color)' }}>
+            <div className="glass animate-fade-in-up" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <h2 style={{ fontSize: '1.25rem', margin: 0 }}>
                   Registered Customers <span style={{ color: 'var(--primary-color)', marginLeft: '0.5rem', fontSize: '1rem' }}>({customers.length})</span>
@@ -713,7 +713,7 @@ const Admin = () => {
 
           {/* ---- TAB: ENQUIRIES ---- */}
           {activeTab === 'enquiries' && (
-            <div className="glass animate-fade-in-up" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem', background: 'var(--surface-color)' }}>
+            <div className="glass animate-fade-in-up" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <h2 style={{ fontSize: '1.25rem', margin: 0 }}>
                   Tool Enquiries <span style={{ color: 'var(--primary-color)', marginLeft: '0.5rem', fontSize: '1rem' }}>({enquiries.length})</span>
@@ -782,7 +782,7 @@ const Admin = () => {
 
           {/* ---- TAB: SETTINGS ---- */}
           {activeTab === 'settings' && (
-            <div className="glass animate-fade-in-up" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem', background: 'var(--surface-color)' }}>
+            <div className="glass animate-fade-in-up" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem' }}>
               <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem' }}>Site Settings</h2>
               <form onSubmit={handleSaveSettings} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div style={{ background: 'rgba(130,211,222,0.05)', border: '1px solid rgba(130,211,222,0.2)', borderRadius: 'var(--radius-md)', padding: '1.5rem' }}>
