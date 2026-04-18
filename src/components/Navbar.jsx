@@ -9,6 +9,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { getCartCount } = useCart();
   const location = useLocation();
+  const registeredUser = JSON.parse(localStorage.getItem('pt_registered') || 'null');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,7 +43,18 @@ const Navbar = () => {
         </nav>
 
         <div className="nav-actions">
-          <Link to="/login" className="btn btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: '0.8rem', borderRadius: '4px', border: '1px solid var(--primary-color)' }}>Register</Link>
+          {registeredUser ? (
+            <span style={{ 
+              display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+              padding: '0.5rem 1rem', fontSize: '0.8rem', borderRadius: '4px',
+              border: '1px solid rgba(130, 211, 222, 0.4)',
+              color: 'var(--primary-color)', fontWeight: 700
+            }}>
+              ✓ {registeredUser.name.split(' ')[0]}
+            </span>
+          ) : (
+            <Link to="/login" className="btn btn-outline" style={{ display: 'inline-flex', padding: '0.5rem 1rem', fontSize: '0.8rem', borderRadius: '4px', border: '1px solid var(--primary-color)' }}>Register</Link>
+          )}
           <Link to="/checkout" className="cart-btn">
             <ShoppingCart size={24} />
             {getCartCount() > 0 && <span className="cart-badge">{getCartCount()}</span>}

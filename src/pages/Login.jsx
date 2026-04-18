@@ -25,11 +25,16 @@ const Login = () => {
 
       if (dbError) throw dbError;
       
+      // Persist registration state so the navbar updates even after reload
+      localStorage.setItem('pt_registered', JSON.stringify({ 
+        name: formData.name, 
+        email: formData.email,
+        phone: formData.phone_number
+      }));
       setSuccess(true);
       setFormData({ name: '', phone_number: '', email: '' });
     } catch (err) {
       console.error('Registration Error:', err);
-      // Handle the case where they might already be registered (unique email constraint)
       if (err.code === '23505') {
         setError('An account with this email already exists.');
       } else {

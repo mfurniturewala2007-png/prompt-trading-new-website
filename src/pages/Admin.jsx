@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { PlusCircle, Edit, Trash2, UploadCloud, X, Search, Settings, Tag, Package, FolderUp, CheckCircle, AlertCircle, Loader } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, UploadCloud, X, Search, Settings, Tag, Package, FolderUp, CheckCircle, AlertCircle, Loader, Users } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { supabase } from '../supabase';
 
@@ -9,7 +9,7 @@ const Admin = () => {
   const fileInputRef = useRef(null);
   const brandFileInputRef = useRef(null);
   
-  const [activeTab, setActiveTab] = useState('products'); // 'products', 'brands', 'settings'
+  const [activeTab, setActiveTab] = useState('products'); // 'products', 'brands', 'customers', 'settings'
   const [loading, setLoading] = useState(true);
   const [dbError, setDbError] = useState('');
 
@@ -34,8 +34,11 @@ const Admin = () => {
   const [isUploading, setIsUploading] = useState(false);
   const folderInputRef = useRef(null);
 
+  // Customers State
+  const [customers, setCustomers] = useState([]);
+
   // Settings State
-  const [settings, setSettings] = useState({ about_text: '', goal: '' });
+  const [settings, setSettings] = useState({ about_text: '', goal: '', enquiry_email: 'mfurniturewala2007@gmail.com' });
   const [savingSettings, setSavingSettings] = useState(false);
 
   useEffect(() => {
@@ -53,10 +56,14 @@ const Admin = () => {
         const { data, error } = await supabase.from('brands').select('*');
         if (error) throw error;
         setBrands(data || []);
+      } else if (activeTab === 'customers') {
+        const { data, error } = await supabase.from('customers').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+        setCustomers(data || []);
       } else if (activeTab === 'settings') {
         const { data, error } = await supabase.from('site_settings').select('*').limit(1).single();
         if (error && error.code !== 'PGRST116') throw error; // ignore no rows error
-        if (data) setSettings(data);
+        if (data) setSettings({ about_text: '', goal: '', enquiry_email: 'mfurniturewala2007@gmail.com', ...data });
       }
       setDbError('');
     } catch (err) {
@@ -319,6 +326,12 @@ const Admin = () => {
           <Tag size={20} /> Authorized Brands
         </button>
         <button 
+          onClick={() => setActiveTab('customers')} 
+          style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', fontWeight: '600', color: activeTab === 'customers' ? 'white' : 'var(--text-secondary)', background: activeTab === 'customers' ? 'var(--primary-color)' : 'transparent', transition: 'var(--transition)' }}
+        >
+          <Users size={20} /> Registered Customers
+        </button>
+        <button 
           onClick={() => setActiveTab('settings')} 
           style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', fontWeight: '600', color: activeTab === 'settings' ? 'white' : 'var(--text-secondary)', background: activeTab === 'settings' ? 'var(--primary-color)' : 'transparent', transition: 'var(--transition)' }}
         >
@@ -477,22 +490,74 @@ const Admin = () => {
             </div>
           )}
 
+          {/* ---- TAB: CUSTOMERS ---- */}
+          {activeTab === 'customers' && (
+            <div className="glass animate-fade-in-up" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem', background: 'var(--surface-color)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                <h2 style={{ fontSize: '1.25rem', margin: 0 }}>
+                  Registered Customers <span style={{ color: 'var(--primary-color)', marginLeft: '0.5rem', fontSize: '1rem' }}>({customers.length})</span>
+                </h2>
+                <span style={{ color: 'var(--text-dim)', fontSize: '0.85rem' }}>These are customers who registered through the website.</span>
+              </div>
+              {customers.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-dim)', border: '1px dashed var(--border-color)', borderRadius: 'var(--radius-md)' }}>
+                  No registrations yet.
+                </div>
+              ) : (
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-secondary)' }}>
+                        <th style={{ padding: '1rem 0.5rem' }}>#</th>
+                        <th style={{ padding: '1rem 0.5rem' }}>Name</th>
+                        <th style={{ padding: '1rem 0.5rem' }}>Email</th>
+                        <th style={{ padding: '1rem 0.5rem' }}>Phone</th>
+                        <th style={{ padding: '1rem 0.5rem' }}>Registered On</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {customers.map((c, i) => (
+                        <tr key={c.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                          <td style={{ padding: '1rem 0.5rem', color: 'var(--text-dim)', fontSize: '0.85rem' }}>{i + 1}</td>
+                          <td style={{ padding: '1rem 0.5rem', fontWeight: '600' }}>{c.name}</td>
+                          <td style={{ padding: '1rem 0.5rem' }}><a href={`mailto:${c.email}`} style={{ color: 'var(--primary-color)' }}>{c.email}</a></td>
+                          <td style={{ padding: '1rem 0.5rem', color: 'var(--text-secondary)' }}>{c.phone_number}</td>
+                          <td style={{ padding: '1rem 0.5rem', color: 'var(--text-dim)', fontSize: '0.85rem' }}>
+                            {new Date(c.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* ---- TAB: SETTINGS ---- */}
           {activeTab === 'settings' && (
             <div className="glass animate-fade-in-up" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem', background: 'var(--surface-color)' }}>
-              <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem' }}>About Us & What We Do</h2>
+              <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem' }}>Site Settings</h2>
               <form onSubmit={handleSaveSettings} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div style={{ background: 'rgba(130,211,222,0.05)', border: '1px solid rgba(130,211,222,0.2)', borderRadius: 'var(--radius-md)', padding: '1.5rem' }}>
+                  <label style={{ display: 'block', marginBottom: '0.25rem', fontWeight: '600', color: 'var(--primary-color)' }}>📧 Order Enquiry Email</label>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-dim)', marginBottom: '0.75rem' }}>
+                    When a customer sends a cart enquiry from the website, it goes to this email address.
+                  </p>
+                  <input type="email" className="form-input" value={settings.enquiry_email || ''} onChange={e => setSettings({...settings, enquiry_email: e.target.value})} placeholder="mfurniturewala2007@gmail.com" />
+                </div>
+                <div style={{ height: '1px', background: 'var(--border-color)' }} />
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Company Goal / Headline</label>
-                  <input required type="text" className="form-input" value={settings.goal || ''} onChange={e => setSettings({...settings, goal: e.target.value})} placeholder="e.g. To provide the best tools globally." />
+                  <input type="text" className="form-input" value={settings.goal || ''} onChange={e => setSettings({...settings, goal: e.target.value})} placeholder="e.g. To provide the best tools globally." />
                 </div>
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Full About Us Description</label>
-                  <textarea required className="form-input" rows="8" value={settings.about_text || ''} onChange={e => setSettings({...settings, about_text: e.target.value})} placeholder="Write the history and mission of Prompt Trading here..." />
+                  <textarea className="form-input" rows="8" value={settings.about_text || ''} onChange={e => setSettings({...settings, about_text: e.target.value})} placeholder="Write the history and mission of Prompt Trading here..." />
                 </div>
                 <div>
                   <button type="submit" className="btn btn-primary" disabled={savingSettings}>
-                    {savingSettings ? 'Saving...' : 'Publish Content'}
+                    {savingSettings ? 'Saving...' : 'Save All Settings'}
                   </button>
                 </div>
               </form>
