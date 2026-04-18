@@ -179,11 +179,6 @@ const Catalog = () => {
               </div>
             )}
           </div>
-              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: 'var(--text-secondary)' }}>
-                No products found. Please add products via the Admin panel.
-              </div>
-            )}
-          </div>
         )}
       </div>
     </div>

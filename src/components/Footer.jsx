@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Linkedin, Facebook, Twitter, ShieldCheck } from 'lucide-react';
+import { Mail, Phone, MapPin, ShieldCheck } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -19,12 +19,10 @@ const Footer = () => {
             <p style={{ color: 'var(--text-dim)', lineHeight: 1.7, marginBottom: '2rem' }}>
               Redefining industrial tool procurement through precision, authorization, and digital excellence.
             </p>
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              {[Linkedin, Facebook, Twitter].map((Icon, i) => (
-                <a key={i} href="#" style={{ padding: '0.75rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', color: 'var(--text-secondary)', transition: 'var(--transition)' }}>
-                  <Icon size={20} />
-                </a>
-              ))}
+            <div style={{ display: 'flex', gap: '1rem', fontWeight: 600, fontSize: '0.9rem' }}>
+              <a href="#" style={{ color: 'var(--primary-color)', transition: 'var(--transition)' }}>LinkedIn</a>
+              <a href="#" style={{ color: 'var(--text-secondary)', transition: 'var(--transition)' }}>Facebook</a>
+              <a href="#" style={{ color: 'var(--text-secondary)', transition: 'var(--transition)' }}>Twitter</a>
             </div>
           </div>
 
