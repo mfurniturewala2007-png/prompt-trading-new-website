@@ -284,7 +284,7 @@ const Admin = () => {
                       <td style={{ padding: '1rem 0.5rem', color: 'var(--text-secondary)' }}>{product.brand} {product.sub_brand && `(${product.sub_brand})`}</td>
                       <td style={{ padding: '1rem 0.5rem', color: 'var(--text-secondary)' }}>{product.category}</td>
                       <td style={{ padding: '1rem 0.5rem', color: 'var(--text-secondary)' }}>{product.quantity_in_stock}</td>
-                      <td style={{ padding: '1rem 0.5rem', fontWeight: 'bold' }}>${Number(product.price).toFixed(2)}</td>
+                      <td style={{ padding: '1rem 0.5rem', fontWeight: 'bold' }}>₹{Number(product.price).toFixed(2)}</td>
                       <td style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>
                         <button onClick={() => handleOpenProductModal(product)} style={{ color: 'var(--text-secondary)', marginRight: '1rem' }}><Edit size={18} /></button>
                         <button onClick={() => handleDeleteProduct(product.id)} style={{ color: '#ef4444' }}><Trash2 size={18} /></button>
