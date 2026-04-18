@@ -21,8 +21,7 @@ const Footer = () => {
             </p>
             <div style={{ display: 'flex', gap: '1rem', fontWeight: 600, fontSize: '0.9rem' }}>
               <a href="#" style={{ color: 'var(--primary-color)', transition: 'var(--transition)' }}>LinkedIn</a>
-              <a href="#" style={{ color: 'var(--text-secondary)', transition: 'var(--transition)' }}>Facebook</a>
-              <a href="#" style={{ color: 'var(--text-secondary)', transition: 'var(--transition)' }}>Twitter</a>
+              <a href="#" style={{ color: 'var(--text-secondary)', transition: 'var(--transition)' }}>Instagram</a>
             </div>
           </div>
 
@@ -61,18 +60,27 @@ const Footer = () => {
           {/* Contact */}
           <div>
             <h4 style={{ color: 'white', marginBottom: '1.5rem', fontSize: '1.1rem' }}>Headquarters</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', color: 'var(--text-dim)' }}>
-              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                <MapPin size={18} color="var(--primary-color)" />
-                <span>Industrial Hub, Phase II, New Delhi</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', color: 'var(--text-dim)', fontSize: '0.9rem' }}>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                <MapPin size={18} color="var(--primary-color)" style={{ marginTop: '3px', flexShrink: 0 }} />
+                <span>
+                  <strong style={{ color: 'var(--text-secondary)' }}>Camp Office:</strong><br />
+                  Shop No 9 & 20, City Center, 930 Synagogue Street, Camp, Pune – 411001<br /><br />
+                  <strong style={{ color: 'var(--text-secondary)' }}>City Office:</strong><br />
+                  978 Raviwar Peth, Sonyamaruti Chowk, Pune – 411002
+                </span>
               </div>
-              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                <Phone size={18} color="var(--primary-color)" />
-                <span>+91 98765 43210</span>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                <Phone size={18} color="var(--primary-color)" style={{ marginTop: '3px', flexShrink: 0 }} />
+                <span>
+                  <strong style={{ color: 'var(--text-secondary)' }}>Office:</strong> 020 46040218 / +91 96570 78640<br />
+                  <strong style={{ color: 'var(--text-secondary)' }}>Admin:</strong> +91 91300 35948<br />
+                  <strong style={{ color: 'var(--text-secondary)' }}>Sales:</strong> +91 85307 84567 / +91 88888 61772 / +91 88888 97955
+                </span>
               </div>
-              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                <Mail size={18} color="var(--primary-color)" />
-                <span>procurement@prompttrading.com</span>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                <Mail size={18} color="var(--primary-color)" style={{ marginTop: '3px', flexShrink: 0 }} />
+                <span>ptc7786@gmail.com<br />zoeb@prompttrading.com</span>
               </div>
             </div>
           </div>

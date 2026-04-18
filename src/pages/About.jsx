@@ -40,14 +40,8 @@ const About = () => {
             Our Legacy
           </span>
           <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', marginBottom: '2rem', letterSpacing: '-1.5px' }}>
-            Precision in every <span className="text-gradient">Partnership</span>
+            Who <span className="text-gradient">We Are</span>
           </h1>
-          
-          {settings?.goal && (
-            <p style={{ fontSize: '1.5rem', color: 'var(--text-primary)', marginBottom: '4rem', fontWeight: '500', borderLeft: '4px solid var(--primary-color)', paddingLeft: '2rem' }}>
-              "{settings.goal}"
-            </p>
-          )}
 
           <div className="glass" style={{ padding: '4rem', borderRadius: '32px', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: '-10%', right: '-10%', opacity: 0.03, color: 'var(--primary-color)' }}>
@@ -55,13 +49,12 @@ const About = () => {
             </div>
             
             <div style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', lineHeight: '1.9' }}>
-              {settings?.about_text ? (
-                 settings.about_text.split('\n').map((paragraph, idx) => (
-                    <p key={idx} style={{ marginBottom: '2rem' }}>{paragraph}</p>
-                 ))
-              ) : (
-                <p>Welcome to Prompt Trading. We are your dedicated hub for the finest industrial tools and authorized brand distribution.</p>
-              )}
+              <p style={{ marginBottom: '1.5rem' }}>
+                Since 2000, Prompt Trading Co. has been Pune's trusted source for premium industrial and professional tools. We supply authorized hardware from the world's top brands to factories, workshops, and professionals across the region.
+              </p>
+              <p>
+                Our team of knowledgeable sales engineers provides expert guidance, on-site visits, torque wrench calibration, new facility setups, and tool storage solutions. We don't just sell tools — we build long-term partnerships built on precision and trust.
+              </p>
             </div>
           </div>
         </motion.div>
