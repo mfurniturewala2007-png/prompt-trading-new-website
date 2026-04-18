@@ -1,34 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Brand Colors - Teal focused */
-  --primary-color: #0fb3ad; /* Main teal */
-  --primary-dark: #0a8e89;
-  --primary-light: #e0f8f7;
-  --secondary-color: #fca311; /* Sunset orange for accents if needed */
+  /* Forge & Slate Design System (Stitch) */
+  --primary-color: #82d3de;
+  --primary-dark: #006972;
+  --primary-light: #9ff0fb;
+  --accent-color: #f7ba89; /* Precision highlight */
   
-  /* Neutral Colors */
-  --bg-color: #f8fafc;
-  --surface-color: #ffffff;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-light: #f1f5f9;
-  --border-color: #e2e8f0;
+  /* Neutral Palette - Machined Greys */
+  --bg-color: #0f1418;
+  --surface-color: #171c20;
+  --surface-container: #1b2024;
+  --surface-bright: #353a3e;
+  
+  --text-primary: #dfe3e8;
+  --text-secondary: #bfc8ca;
+  --text-dim: #8a9295;
+  
+  --border-color: rgba(138, 146, 149, 0.15); /* Ghost Border */
+  --glass-border: rgba(255, 255, 255, 0.1);
 
   /* UI Tokens */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
   
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-glow: 0 0 15px rgba(15, 179, 173, 0.3);
+  --shadow-diffused: 0 40px 60px -20px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 20px rgba(130, 211, 222, 0.2);
   
-  /* Spacing */
-  --container-width: 1200px;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Animation Tokens */
+  --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  --container-width: 1400px;
 }
 
 * {
@@ -39,7 +42,7 @@
 
 body {
   margin: 0;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', sans-serif;
   background-color: var(--bg-color);
   color: var(--text-primary);
   line-height: 1.6;
@@ -48,6 +51,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
+  font-family: 'Manrope', sans-serif;
   line-height: 1.2;
   font-weight: 700;
   color: var(--text-primary);
@@ -134,12 +138,18 @@ main.content {
   padding-top: 5rem; /* Space for fixed navbar */
 }
 
-/* Glassmorphism */
+/* Glassmorphism - Machined Glass */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(27, 32, 36, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Section Spacing */

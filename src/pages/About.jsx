@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabase';
+import { motion } from 'framer-motion';
+import { ShieldCheck } from 'lucide-react';
 
 const About = () => {
   const [settings, setSettings] = useState(null);
@@ -17,24 +19,65 @@ const About = () => {
   if (loading) return <div className="container section-py" style={{ textAlign: 'center' }}>Loading...</div>;
 
   return (
-    <div className="container section-py">
-      <h1 className="text-gradient" style={{ textAlign: 'center', marginBottom: '1rem' }}>About Prompt Trading</h1>
-      
-      {settings?.goal && (
-        <h2 style={{ textAlign: 'center', fontSize: '1.5rem', color: 'var(--text-primary)', marginBottom: '3rem', fontWeight: '500' }}>
-          "{settings.goal}"
-        </h2>
-      )}
-
-      <div style={{ maxWidth: '800px', margin: '0 auto', fontSize: '1.125rem', color: 'var(--text-secondary)', lineHeight: '1.8' }} className="glass" >
-        <div style={{ padding: '3rem', borderRadius: 'var(--radius-xl)' }}>
-          {settings?.about_text ? (
-             settings.about_text.split('\n').map((paragraph, idx) => (
-                <p key={idx} style={{ marginBottom: '1.5rem' }}>{paragraph}</p>
-             ))
-          ) : (
-            <p>Welcome to Prompt Trading.</p>
+    <div className="container" style={{ paddingTop: '10rem', paddingBottom: '8rem' }}>
+      <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+        <motion.div
+           initial={{ opacity: 0, y: 30 }}
+           whileInView={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.8 }}
+        >
+          <span className="badge" style={{ 
+            background: 'rgba(130, 211, 222, 0.1)', 
+            color: 'var(--primary-color)',
+            padding: '4px 12px',
+            borderRadius: '100px',
+            textTransform: 'uppercase',
+            fontSize: '0.7rem',
+            fontWeight: 800,
+            marginBottom: '1rem',
+            display: 'inline-block'
+          }}>
+            Our Legacy
+          </span>
+          <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', marginBottom: '2rem', letterSpacing: '-1.5px' }}>
+            Precision in every <span className="text-gradient">Partnership</span>
+          </h1>
+          
+          {settings?.goal && (
+            <p style={{ fontSize: '1.5rem', color: 'var(--text-primary)', marginBottom: '4rem', fontWeight: '500', borderLeft: '4px solid var(--primary-color)', paddingLeft: '2rem' }}>
+              "{settings.goal}"
+            </p>
           )}
+
+          <div className="glass" style={{ padding: '4rem', borderRadius: '32px', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: '-10%', right: '-10%', opacity: 0.03, color: 'var(--primary-color)' }}>
+              <ShieldCheck size={200} />
+            </div>
+            
+            <div style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', lineHeight: '1.9' }}>
+              {settings?.about_text ? (
+                 settings.about_text.split('\n').map((paragraph, idx) => (
+                    <p key={idx} style={{ marginBottom: '2rem' }}>{paragraph}</p>
+                 ))
+              ) : (
+                <p>Welcome to Prompt Trading. We are your dedicated hub for the finest industrial tools and authorized brand distribution.</p>
+              )}
+            </div>
+          </div>
+        </motion.div>
+        
+        {/* Why Us Cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', marginTop: '6rem' }}>
+          {[
+            { title: "Authorized Only", desc: "We only deal in certified, factory-direct industrial hardware." },
+            { title: "Technical Support", desc: "Expert guidance for machining and project requirements." },
+            { title: "Fast Procurement", desc: "Minimized downtime through optimized logistics pipelines." }
+          ].map((item, i) => (
+             <div key={i} className="glass-light" style={{ padding: '2rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+               <h4 style={{ color: 'var(--primary-color)', marginBottom: '0.75rem' }}>{item.title}</h4>
+               <p style={{ fontSize: '0.9rem', color: 'var(--text-dim)' }}>{item.desc}</p>
+             </div>
+          ))}
         </div>
       </div>
     </div>

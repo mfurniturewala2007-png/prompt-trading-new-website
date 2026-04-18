@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { Filter, Search } from 'lucide-react';
 import { supabase } from '../supabase';
+import { motion } from 'framer-motion';
 
 const Catalog = () => {
   const { addToCart } = useCart();
@@ -31,16 +32,25 @@ const Catalog = () => {
   });
 
   return (
-    <div className="container section-py">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <h1 className="text-gradient">Product Catalog</h1>
-        <div style={{ position: 'relative', minWidth: '300px' }}>
-          <Search size={20} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+    <div className="container" style={{ paddingTop: '10rem', paddingBottom: '8rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '4rem', flexWrap: 'wrap', gap: '2rem' }}>
+        <div>
+          <span className="badge" style={{ color: 'var(--primary-color)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '2px', display: 'block', marginBottom: '1rem' }}>Inventory</span>
+          <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-1.5px', margin: 0 }}>Product <span className="text-gradient">Catalog</span></h1>
+        </div>
+        <div style={{ position: 'relative', minWidth: '320px' }}>
+          <Search size={20} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
           <input 
             type="text" 
             className="form-input" 
-            placeholder="Search products..." 
-            style={{ paddingLeft: '2.5rem' }}
+            placeholder="Search precision tools..." 
+            style={{ 
+              paddingLeft: '3rem', 
+              background: 'rgba(255,255,255,0.03)', 
+              border: '1px solid rgba(255,255,255,0.05)',
+              borderRadius: '8px',
+              height: '50px'
+            }}
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
@@ -49,94 +59,126 @@ const Catalog = () => {
 
       <div style={{ display: 'flex', gap: '2rem', flexDirection: 'column' }}>
         
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', padding: '1rem', background: 'var(--surface-color)', borderRadius: 'var(--radius-lg)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)' }}>
-            <Filter size={20} /> <span style={{ fontWeight: 600 }}>Filters:</span>
+        <div style={{ 
+          display: 'flex', 
+          gap: '1.5rem', 
+          flexWrap: 'wrap', 
+          padding: '1.5rem', 
+          background: 'rgba(255,255,255,0.02)', 
+          borderRadius: '16px',
+          border: '1px solid rgba(255,255,255,0.05)',
+          alignItems: 'center'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>
+            <Filter size={18} /> Filters
           </div>
           
-          <select 
-            className="form-input" 
-            style={{ width: 'auto', minWidth: '150px' }}
-            value={selectedCategory}
-            onChange={e => setSelectedCategory(e.target.value)}
-          >
-            {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-          </select>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <select 
+              className="form-input" 
+              style={{ width: 'auto', minWidth: '180px', height: '40px', background: 'var(--bg-color)', fontSize: '0.9rem' }}
+              value={selectedCategory}
+              onChange={e => setSelectedCategory(e.target.value)}
+            >
+              <option value="All">All Categories</option>
+              {categories.filter(c => c !== 'All').map(cat => <option key={cat} value={cat}>{cat}</option>)}
+            </select>
 
-          <select 
-            className="form-input" 
-            style={{ width: 'auto', minWidth: '150px' }}
-            value={selectedBrand}
-            onChange={e => setSelectedBrand(e.target.value)}
-          >
-            {brands.map(brand => <option key={brand} value={brand}>{brand}</option>)}
-          </select>
+            <select 
+              className="form-input" 
+              style={{ width: 'auto', minWidth: '180px', height: '40px', background: 'var(--bg-color)', fontSize: '0.9rem' }}
+              value={selectedBrand}
+              onChange={e => setSelectedBrand(e.target.value)}
+            >
+              <option value="All">All Brands</option>
+              {brands.filter(b => b !== 'All').map(brand => <option key={brand} value={brand}>{brand}</option>)}
+            </select>
+          </div>
         </div>
 
         {loading ? (
           <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-secondary)' }}>Loading inventory from database...</div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2.5rem' }}>
             {filteredProducts.length > 0 ? filteredProducts.map(product => (
-              <div key={product.id} className="glass" style={{
-                borderRadius: 'var(--radius-xl)',
-                overflow: 'hidden',
-                display: 'flex',
-                flexDirection: 'column',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                border: '1px solid rgba(255, 255, 255, 0.5)',
-                background: 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 100%)',
-                boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.07)'
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = '0 15px 40px -5px rgba(15, 179, 173, 0.2)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 32px 0 rgba(31, 38, 135, 0.07)'; }}
+              <motion.div 
+                key={product.id} 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                className="glass" 
+                style={{
+                  borderRadius: '24px',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  transition: 'var(--transition)',
+                  border: '1px solid rgba(255, 255, 255, 0.05)',
+                  background: 'rgba(27, 32, 36, 0.6)'
+                }}
+                whileHover={{ y: -10, borderColor: 'rgba(130, 211, 222, 0.2)' }}
               >
-                <div style={{ height: '220px', background: 'linear-gradient(to bottom right, #f1f5f9, #e2e8f0)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                  <span style={{ color: 'var(--text-secondary)', fontWeight: 500, letterSpacing: '1px' }}>{product.part_number ? `PN: ${product.part_number}` : 'NO IMAGE'}</span>
+                <div style={{ height: '240px', background: 'rgba(255,255,255,0.02)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                  <span style={{ color: 'var(--text-dim)', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '2px', opacity: 0.5 }}>
+                    {product.part_number ? `PN: ${product.part_number}` : 'MACHINED HARDWARE'}
+                  </span>
                   {/* Stock Badge */}
                   <div style={{
                     position: 'absolute',
-                    top: '1rem',
-                    right: '1rem',
-                    padding: '0.25rem 0.75rem',
-                    borderRadius: '2rem',
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    background: product.quantity_in_stock > 0 ? 'var(--primary-light)' : '#fee2e2',
-                    color: product.quantity_in_stock > 0 ? 'var(--primary-dark)' : '#991b1b',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                    top: '1.25rem',
+                    right: '1.25rem',
+                    padding: '0.35rem 1rem',
+                    borderRadius: '100px',
+                    fontSize: '0.7rem',
+                    fontWeight: 800,
+                    letterSpacing: '0.5px',
+                    background: product.quantity_in_stock > 0 ? 'rgba(130, 211, 222, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                    color: product.quantity_in_stock > 0 ? 'var(--primary-color)' : '#ef4444',
+                    border: `1px solid ${product.quantity_in_stock > 0 ? 'rgba(130, 211, 222, 0.2)' : 'rgba(239, 68, 68, 0.2)'}`
                   }}>
-                    {product.quantity_in_stock > 0 ? `${product.quantity_in_stock} IN STOCK` : 'OUT OF STOCK'}
+                    {product.quantity_in_stock > 0 ? `${product.quantity_in_stock} IN STOCK` : 'DEPLETED'}
                   </div>
                 </div>
                 
-                <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', fontSize: '0.875rem' }}>
-                    <span style={{ color: 'var(--primary-color)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                      {product.brand} {product.sub_brand && <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>/ {product.sub_brand}</span>}
+                <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                    <span style={{ color: 'var(--primary-color)' }}>
+                      {product.brand} {product.sub_brand && <span style={{ color: 'var(--text-dim)', fontWeight: 500 }}> / {product.sub_brand}</span>}
                     </span>
-                    <span style={{ padding: '0.15rem 0.5rem', background: '#f1f5f9', borderRadius: '4px', color: 'var(--text-secondary)', fontSize: '0.75rem', fontWeight: 600 }}>
+                    <span style={{ color: 'var(--text-dim)' }}>
                       {product.category}
                     </span>
                   </div>
-                  <h3 style={{ fontSize: '1.35rem', marginBottom: '1rem', flex: 1, color: 'var(--text-primary)', lineHeight: 1.3 }}>{product.name}</h3>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
+                  <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', flex: 1, color: 'var(--text-primary)', lineHeight: 1.3, letterSpacing: '-0.5px' }}>{product.name}</h3>
+                  <div style={{ height: '1px', background: 'var(--border-color)', marginBottom: '1.5rem' }} />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.1rem' }}>Price</span>
-                      <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>₹{Number(product.price).toFixed(2)}</span>
+                      <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '1px', marginBottom: '0.25rem' }}>Unit Price</span>
+                      <span style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-1px' }}>₹{Number(product.price).toLocaleString('en-IN')}</span>
                     </div>
                     <button 
                       className="btn btn-primary" 
-                      style={{ padding: '0.6rem 1.25rem', borderRadius: '2rem', fontSize: '0.9rem', opacity: product.quantity_in_stock > 0 ? 1 : 0.5, cursor: product.quantity_in_stock > 0 ? 'pointer' : 'not-allowed' }} 
+                      style={{ 
+                        padding: '0.8rem 1.5rem', 
+                        borderRadius: '4px', 
+                        fontSize: '0.85rem', 
+                        fontWeight: 700,
+                        opacity: product.quantity_in_stock > 0 ? 1 : 0.5, 
+                        cursor: product.quantity_in_stock > 0 ? 'pointer' : 'not-allowed' 
+                      }} 
                       onClick={() => product.quantity_in_stock > 0 && addToCart(product)}
                       disabled={product.quantity_in_stock <= 0}
                     >
-                      {product.quantity_in_stock > 0 ? 'Add to Cart' : 'Unavailable'}
+                      {product.quantity_in_stock > 0 ? 'Acquire' : 'Unavailable'}
                     </button>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             )) : (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '6rem', background: 'rgba(255,255,255,0.02)', borderRadius: '24px', color: 'var(--text-dim)' }}>
+                No hardware found matching your criteria.
+              </div>
+            )}
+          </div>
               <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: 'var(--text-secondary)' }}>
                 No products found. Please add products via the Admin panel.
               </div>
