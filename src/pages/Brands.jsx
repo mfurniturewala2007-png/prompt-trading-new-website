@@ -45,33 +45,52 @@ const Brands = () => {
           {brands.length > 0 ? brands.map((brand, i) => (
             <motion.div 
               key={brand.id} 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="glass" 
+              initial={{ opacity: 0, scale: 0.9, y: 30 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ delay: i * 0.05, type: 'spring', stiffness: 200, damping: 20 }}
               style={{
-                padding: '3rem 2rem',
-                borderRadius: '24px',
-                transition: 'var(--transition)',
-                border: '1px solid rgba(255,255,255,0.05)',
+                padding: '2rem 1rem',
                 display: 'flex',
                 flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
                 gap: '1.5rem'
               }}
             >
               <div style={{
-                width: '100%', height: '140px', background: 'rgba(255,255,255,0.02)',
-                borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
-                border: '1px solid rgba(255,255,255,0.05)'
+                width: '100%', height: '160px', display: 'flex', alignItems: 'center', justifyContent: 'center', perspective: '1000px'
               }}>
                 {brand.image_url ? (
-                  <img src={brand.image_url} alt={brand.name} style={{ width: '80%', height: '80%', objectFit: 'contain', filter: 'brightness(1.1)' }} />
+                  <motion.img 
+                    src={brand.image_url} 
+                    alt={brand.name} 
+                    initial={{ filter: 'drop-shadow(0px 0px 0px rgba(0,0,0,0))' }}
+                    whileHover={{ 
+                      scale: 1.15, 
+                      filter: 'drop-shadow(0px 20px 35px rgba(255, 255, 255, 0.2))',
+                      y: -10,
+                      rotateX: 5
+                    }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                    style={{ 
+                      maxHeight: '100%', 
+                      maxWidth: '100%', 
+                      objectFit: 'contain',
+                      transformOrigin: 'bottom center'
+                    }} 
+                  />
                 ) : (
-                  <Award size={48} color="var(--primary-color)" style={{ opacity: 0.5 }} />
+                  <Award size={64} color="var(--primary-color)" style={{ opacity: 0.3 }} />
                 )}
               </div>
               <div>
-                <h3 style={{ fontSize: '1.75rem', marginBottom: '0.75rem', letterSpacing: '-0.5px' }}>{brand.name}</h3>
+                <motion.h3 
+                  whileHover={{ color: 'var(--primary-color)' }}
+                  style={{ fontSize: '1.75rem', marginBottom: '0.75rem', letterSpacing: '-0.5px', transition: 'var(--transition)' }}
+                >
+                  {brand.name}
+                </motion.h3>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6 }}>{brand.description}</p>
               </div>
             </motion.div>

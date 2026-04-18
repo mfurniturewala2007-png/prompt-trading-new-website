@@ -181,54 +181,60 @@ const Home = () => {
             {brands.length > 0 ? brands.map((brand, i) => (
               <motion.div 
                 key={brand.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                whileHover={{ y: -5, borderColor: 'var(--primary-color)' }}
-                className="glass"
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: i * 0.05, type: "spring", stiffness: 200, damping: 20 }}
                 style={{
                   height: '140px',
-                  borderRadius: 'var(--radius-sm)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
-                  border: '2px solid rgba(255,255,255,0.05)',
-                  background: 'var(--surface-color)',
-                  transition: 'var(--transition)',
                   padding: '1.5rem',
-                  textAlign: 'center',
-                  overflow: 'hidden'
+                  position: 'relative'
                 }}
               >
                 {brand.image_url ? (
-                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <img 
-                      src={brand.image_url} 
-                      alt={brand.name} 
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        const fallback = document.createElement('h3');
-                        fallback.innerText = brand.name;
-                        fallback.style.cssText = "font-size: 1.35rem; color: var(--text-secondary); letter-spacing: 1px; font-weight: 900; text-transform: uppercase; margin: 0;";
-                        e.currentTarget.parentNode.appendChild(fallback);
-                      }}
-                      style={{ width: '85%', height: '85%', objectFit: 'contain', filter: 'grayscale(100%) contrast(120%)', transition: 'var(--transition)' }} 
-                      onMouseEnter={(e) => e.currentTarget.style.filter = 'grayscale(0%) contrast(100%)'} 
-                      onMouseLeave={(e) => e.currentTarget.style.filter = 'grayscale(100%) contrast(120%)'} 
-                    />
-                  </div>
+                  <motion.img 
+                    src={brand.image_url} 
+                    alt={brand.name} 
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      const fallback = document.createElement('h3');
+                      fallback.innerText = brand.name;
+                      fallback.style.cssText = "font-size: 1.35rem; color: var(--text-primary); letter-spacing: 2px; font-weight: 900; text-transform: uppercase; margin: 0;";
+                      e.currentTarget.parentNode.appendChild(fallback);
+                    }}
+                    initial={{ filter: 'drop-shadow(0px 0px 0px rgba(0,0,0,0))' }}
+                    whileHover={{ 
+                      scale: 1.15, 
+                      filter: 'drop-shadow(0px 15px 25px rgba(255, 255, 255, 0.2))',
+                      y: -10
+                    }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                    style={{ 
+                      maxWidth: '100%', 
+                      maxHeight: '100%', 
+                      objectFit: 'contain',
+                      transformOrigin: 'center'
+                    }} 
+                  />
                 ) : (
-                  <h3 style={{ 
-                    fontSize: '1.35rem', 
-                    color: 'var(--text-secondary)', 
-                    letterSpacing: '1px', 
-                    fontWeight: 900,
-                    textTransform: 'uppercase',
-                    margin: 0
-                  }}>
+                  <motion.h3 
+                    whileHover={{ scale: 1.1, color: 'var(--primary-color)', y: -5 }}
+                    transition={{ type: 'spring', stiffness: 300 }}
+                    style={{ 
+                      fontSize: '1.5rem', 
+                      color: 'var(--text-secondary)', 
+                      letterSpacing: '2px', 
+                      fontWeight: 900,
+                      textTransform: 'uppercase',
+                      margin: 0
+                    }}
+                  >
                     {brand.name}
-                  </h3>
+                  </motion.h3>
                 )}
               </motion.div>
             )) : (
