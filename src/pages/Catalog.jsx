@@ -79,27 +79,59 @@ const Catalog = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem' }}>
             {filteredProducts.length > 0 ? filteredProducts.map(product => (
               <div key={product.id} className="glass" style={{
-                borderRadius: 'var(--radius-lg)',
+                borderRadius: 'var(--radius-xl)',
                 overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
-                transition: 'var(--transition)',
-                border: '1px solid var(--border-color)',
-              }}>
-                <div style={{ height: '200px', background: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>{product.part_number || 'No Image'}</span>
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                border: '1px solid rgba(255, 255, 255, 0.5)',
+                background: 'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 100%)',
+                boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.07)'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = '0 15px 40px -5px rgba(15, 179, 173, 0.2)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 32px 0 rgba(31, 38, 135, 0.07)'; }}
+              >
+                <div style={{ height: '220px', background: 'linear-gradient(to bottom right, #f1f5f9, #e2e8f0)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                  <span style={{ color: 'var(--text-secondary)', fontWeight: 500, letterSpacing: '1px' }}>{product.part_number ? `PN: ${product.part_number}` : 'NO IMAGE'}</span>
+                  {/* Stock Badge */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '1rem',
+                    right: '1rem',
+                    padding: '0.25rem 0.75rem',
+                    borderRadius: '2rem',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    background: product.quantity_in_stock > 0 ? 'var(--primary-light)' : '#fee2e2',
+                    color: product.quantity_in_stock > 0 ? 'var(--primary-dark)' : '#991b1b',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                  }}>
+                    {product.quantity_in_stock > 0 ? `${product.quantity_in_stock} IN STOCK` : 'OUT OF STOCK'}
+                  </div>
                 </div>
                 
                 <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
-                    <span style={{ color: 'var(--primary-color)', fontWeight: 600 }}>{product.brand}</span>
-                    <span style={{ color: 'var(--text-secondary)' }}>{product.category}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', fontSize: '0.875rem' }}>
+                    <span style={{ color: 'var(--primary-color)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      {product.brand} {product.sub_brand && <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>/ {product.sub_brand}</span>}
+                    </span>
+                    <span style={{ padding: '0.15rem 0.5rem', background: '#f1f5f9', borderRadius: '4px', color: 'var(--text-secondary)', fontSize: '0.75rem', fontWeight: 600 }}>
+                      {product.category}
+                    </span>
                   </div>
-                  <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', flex: 1 }}>{product.name}</h3>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
-                    <span style={{ fontSize: '1.5rem', fontWeight: 700 }}>${Number(product.price).toFixed(2)}</span>
-                    <button className="btn btn-primary" style={{ padding: '0.5rem 1rem' }} onClick={() => addToCart(product)}>
-                      Add to Cart
+                  <h3 style={{ fontSize: '1.35rem', marginBottom: '1rem', flex: 1, color: 'var(--text-primary)', lineHeight: 1.3 }}>{product.name}</h3>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.1rem' }}>Price</span>
+                      <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>${Number(product.price).toFixed(2)}</span>
+                    </div>
+                    <button 
+                      className="btn btn-primary" 
+                      style={{ padding: '0.6rem 1.25rem', borderRadius: '2rem', fontSize: '0.9rem', opacity: product.quantity_in_stock > 0 ? 1 : 0.5, cursor: product.quantity_in_stock > 0 ? 'pointer' : 'not-allowed' }} 
+                      onClick={() => product.quantity_in_stock > 0 && addToCart(product)}
+                      disabled={product.quantity_in_stock <= 0}
+                    >
+                      {product.quantity_in_stock > 0 ? 'Add to Cart' : 'Unavailable'}
                     </button>
                   </div>
                 </div>

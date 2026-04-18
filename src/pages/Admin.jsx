@@ -17,7 +17,7 @@ const Admin = () => {
   const [searchProduct, setSearchProduct] = useState('');
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
-  const [productForm, setProductForm] = useState({ name: '', part_number: '', price: '', brand: '', category: '', image_url: '' });
+  const [productForm, setProductForm] = useState({ name: '', part_number: '', price: '', quantity_in_stock: '', brand: '', sub_brand: '', category: '', image_url: '' });
 
   // Brands State
   const [brands, setBrands] = useState([]);
@@ -68,7 +68,7 @@ const Admin = () => {
       setProductForm(product);
     } else {
       setEditingProductId(null);
-      setProductForm({ name: '', part_number: '', price: '', brand: '', category: '', image_url: '' });
+      setProductForm({ name: '', part_number: '', price: '', quantity_in_stock: '', brand: '', sub_brand: '', category: '', image_url: '' });
     }
     setIsProductModalOpen(true);
   };
@@ -113,7 +113,9 @@ const Admin = () => {
           name: item['Tool Name'] || item.name || item.Name || item['Product Name'] || 'Unknown Product',
           part_number: String(item['Part Number'] || item.part_number || item['Part number'] || ''),
           price: parseFloat(item.price || item.Price || item.Cost || 0) || 0, // Fallback to 0 if no price column exists
-          brand: item.Brand || item.brand || item['Sub-Brand'] || 'Unknown Brand',
+          quantity_in_stock: parseInt(item['Quantity in Stock'] || item.quantity || item.Quantity || 0) || 0,
+          brand: item.Brand || item.brand || 'Unknown Brand',
+          sub_brand: item['Sub-Brand'] || item.sub_brand || item.subbrand || '',
           category: item['Tool Category'] || item.category || item.Category || 'General',
           image_url: item.image_url || item['Image URL'] || item.imageUrl || ''
         }));
@@ -270,6 +272,7 @@ const Admin = () => {
                     <th style={{ padding: '1rem 0.5rem' }}>Tool Name</th>
                     <th style={{ padding: '1rem 0.5rem' }}>Brand</th>
                     <th style={{ padding: '1rem 0.5rem' }}>Category</th>
+                    <th style={{ padding: '1rem 0.5rem' }}>Qty</th>
                     <th style={{ padding: '1rem 0.5rem' }}>Price</th>
                     <th style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>Actions</th>
                   </tr>
@@ -278,8 +281,9 @@ const Admin = () => {
                   {products.filter(p => p.name?.toLowerCase().includes(searchProduct.toLowerCase())).map(product => (
                     <tr key={product.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                       <td style={{ padding: '1rem 0.5rem', fontWeight: '500' }}>{product.name}</td>
-                      <td style={{ padding: '1rem 0.5rem', color: 'var(--text-secondary)' }}>{product.brand}</td>
+                      <td style={{ padding: '1rem 0.5rem', color: 'var(--text-secondary)' }}>{product.brand} {product.sub_brand && `(${product.sub_brand})`}</td>
                       <td style={{ padding: '1rem 0.5rem', color: 'var(--text-secondary)' }}>{product.category}</td>
+                      <td style={{ padding: '1rem 0.5rem', color: 'var(--text-secondary)' }}>{product.quantity_in_stock}</td>
                       <td style={{ padding: '1rem 0.5rem', fontWeight: 'bold' }}>${Number(product.price).toFixed(2)}</td>
                       <td style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>
                         <button onClick={() => handleOpenProductModal(product)} style={{ color: 'var(--text-secondary)', marginRight: '1rem' }}><Edit size={18} /></button>
@@ -353,7 +357,9 @@ const Admin = () => {
               <input required type="text" className="form-input" placeholder="Product Name" value={productForm.name} onChange={e => setProductForm({...productForm, name: e.target.value})} style={{ gridColumn: '1 / -1' }}/>
               <input required type="text" className="form-input" placeholder="Part Number" value={productForm.part_number} onChange={e => setProductForm({...productForm, part_number: e.target.value})} />
               <input required type="number" step="0.01" className="form-input" placeholder="Price" value={productForm.price} onChange={e => setProductForm({...productForm, price: e.target.value})} />
+              <input required type="number" className="form-input" placeholder="Quantity in Stock" value={productForm.quantity_in_stock} onChange={e => setProductForm({...productForm, quantity_in_stock: e.target.value})} />
               <input required type="text" className="form-input" placeholder="Brand" value={productForm.brand} onChange={e => setProductForm({...productForm, brand: e.target.value})} />
+              <input type="text" className="form-input" placeholder="Sub-Brand" value={productForm.sub_brand} onChange={e => setProductForm({...productForm, sub_brand: e.target.value})} />
               <input required type="text" className="form-input" placeholder="Category" value={productForm.category} onChange={e => setProductForm({...productForm, category: e.target.value})} />
               <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
                 <button type="button" className="btn btn-outline" onClick={() => setIsProductModalOpen(false)}>Cancel</button>
