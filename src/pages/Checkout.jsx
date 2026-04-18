@@ -72,11 +72,9 @@ const Checkout = () => {
           'service_teaui8j', 
           'template_myo8xta', 
           templateParams, 
-          '89gOARMjgGuKOT1wPEMa3'
+          'Z00gnUpt1VItotVp8'
         );
       } catch (emailErr) {
-        // TEMPORARY DEBUG ALERT
-        alert("EmailJS Failed. Tell your AI this exact error: " + (emailErr?.text || emailErr?.message || JSON.stringify(emailErr)));
         console.warn("Email notification failed (keys probably not set), but inquiry is saved in DB.", emailErr);
       }
 
