@@ -11,7 +11,18 @@ const Brands = () => {
   useEffect(() => {
     const fetchBrands = async () => {
       const { data } = await supabase.from('brands').select('*');
-      setBrands(data || []);
+      if (data) {
+        const sortedData = [...data].sort((a, b) => {
+          const aIsSnap = a.name.toLowerCase().includes('snap');
+          const bIsSnap = b.name.toLowerCase().includes('snap');
+          if (aIsSnap && !bIsSnap) return -1;
+          if (!aIsSnap && bIsSnap) return 1;
+          return a.name.localeCompare(b.name);
+        });
+        setBrands(sortedData);
+      } else {
+        setBrands([]);
+      }
       setLoading(false);
     };
     fetchBrands();

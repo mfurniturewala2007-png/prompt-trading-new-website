@@ -10,7 +10,16 @@ const Home = () => {
   useEffect(() => {
     const fetchBrands = async () => {
       const { data } = await supabase.from('brands').select('*');
-      if (data) setBrands(data);
+      if (data) {
+        const sortedData = [...data].sort((a, b) => {
+          const aIsSnap = a.name.toLowerCase().includes('snap');
+          const bIsSnap = b.name.toLowerCase().includes('snap');
+          if (aIsSnap && !bIsSnap) return -1;
+          if (!aIsSnap && bIsSnap) return 1;
+          return a.name.localeCompare(b.name);
+        });
+        setBrands(sortedData);
+      }
     };
     fetchBrands();
   }, []);
@@ -115,42 +124,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Why Choose Us - Precision Icons */}
-      <section className="section-py" style={{ background: 'var(--surface-color)', position: 'relative' }}>
-        <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
-            <motion.h2 
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              style={{ fontSize: '2.5rem', marginBottom: '1rem' }}
-            >
-              The Machined Advantage
-            </motion.h2>
-            <p style={{ color: 'var(--text-dim)', maxWidth: '600px', margin: '0 auto' }}>We bridge the gap between heavy industry and digital precision.</p>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem' }}>
-            {[
-              { icon: <Shield size={32} />, title: "Precision Shield", desc: "Every tool is manually inspected for tolerance and certification before shipping." },
-              { icon: <Zap size={32} />, title: "Machined Speed", desc: "Our logistics network is built for industrial urgency. Same-day dispatch on in-stock toolsets." },
-              { icon: <Globe size={32} />, title: "Global Network", desc: "Sourcing authorized hardware from top-tier engineering hubs across the globe." }
-            ].map((item, i) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                style={{ padding: '2rem', background: 'transparent' }}
-              >
-                <div style={{ color: 'var(--primary-color)', marginBottom: '1.5rem' }}>{item.icon}</div>
-                <h3 style={{ marginBottom: '1rem', fontSize: '1.5rem' }}>{item.title}</h3>
-                <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{item.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Brands We Carry - Premium Grid */}
       <section className="section-py">
         <div className="container">
@@ -230,6 +203,42 @@ const Home = () => {
                 Waiting for manufacturer data sync... Please configure brands in Admin Panel.
               </div>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us - Precision Icons */}
+      <section className="section-py" style={{ background: 'var(--surface-color)', position: 'relative' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
+            <motion.h2 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              style={{ fontSize: '2.5rem', marginBottom: '1rem' }}
+            >
+              The Machined Advantage
+            </motion.h2>
+            <p style={{ color: 'var(--text-dim)', maxWidth: '600px', margin: '0 auto' }}>We bridge the gap between heavy industry and digital precision.</p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem' }}>
+            {[
+              { icon: <Shield size={32} />, title: "Precision Shield", desc: "Every tool is manually inspected for tolerance and certification before shipping." },
+              { icon: <Zap size={32} />, title: "Machined Speed", desc: "Our logistics network is built for industrial urgency. Same-day dispatch on in-stock toolsets." },
+              { icon: <Globe size={32} />, title: "Global Network", desc: "Sourcing authorized hardware from top-tier engineering hubs across the globe." }
+            ].map((item, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                style={{ padding: '2rem', background: 'transparent' }}
+              >
+                <div style={{ color: 'var(--primary-color)', marginBottom: '1.5rem' }}>{item.icon}</div>
+                <h3 style={{ marginBottom: '1rem', fontSize: '1.5rem' }}>{item.title}</h3>
+                <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{item.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
