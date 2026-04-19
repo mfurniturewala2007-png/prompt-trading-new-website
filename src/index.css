@@ -601,3 +601,77 @@ main.content {
     box-shadow: none;
   }
 }
+
+/* ── Dynamic Brand Pages (Snap-on Theme) ───────────────────────────── */
+.brand-page {
+  padding-top: 5rem;
+}
+
+.brand-hero {
+  padding: 4rem 0 2rem;
+}
+
+.brand-hero-ambient {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, var(--primary-color) 0%, transparent 60%);
+  opacity: 0.1;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Snap-on Dedicated Theme */
+.theme-snapon {
+  --primary-color: #e3000f; /* Snap-on Red */
+  --primary-dark: #b3000b;
+  --primary-light: rgba(227, 0, 15, 0.15);
+  --border-color: rgba(227, 0, 15, 0.15);
+  background-color: #050505; /* Deeper black for stark contrast with red */
+}
+
+.theme-snapon .glass {
+  background: rgba(15, 0, 0, 0.7); /* Red tinted glass */
+  border: 1px solid rgba(227, 0, 15, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(227, 0, 15, 0.05);
+}
+
+.theme-snapon .product-card-img-container {
+  background: rgba(227, 0, 15, 0.04); /* Subtle red wash in image area */
+}
+
+.theme-snapon .brand-hero-content {
+  background: linear-gradient(145deg, rgba(227, 0, 15, 0.1) 0%, rgba(10, 0, 0, 0.9) 100%);
+  border: 1px solid rgba(227, 0, 15, 0.3);
+  box-shadow: 0 20px 50px rgba(227, 0, 15, 0.1);
+}
+
+.theme-snapon .brand-hero-ambient {
+  background: radial-gradient(circle, #e3000f 0%, transparent 50%);
+  opacity: 0.15;
+}
+
+.theme-snapon .btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border: 1px solid var(--primary-dark);
+}
+
+.theme-snapon .btn-primary:hover {
+  background-color: var(--primary-dark);
+  box-shadow: 0 0 25px rgba(227, 0, 15, 0.4);
+}
+
+.theme-snapon .brand-text-highlight {
+  color: var(--primary-color);
+  font-weight: 800;
+  text-shadow: 0 0 10px rgba(227, 0, 15, 0.3);
+}
+
+.theme-snapon .product-stock-badge {
+  background: rgba(227, 0, 15, 0.15) !important;
+  color: #ff4d4d !important;
+  border: 1px solid rgba(227, 0, 15, 0.3) !important;
+}

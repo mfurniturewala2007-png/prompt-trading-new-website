@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import About from './pages/About';
 import Brands from './pages/Brands';
+import BrandPage from './pages/BrandPage';
 import Catalog from './pages/Catalog';
 import Checkout from './pages/Checkout';
 import Admin from './pages/Admin';
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/brands" element={<Brands />} />
+          <Route path="/brands/:brandName" element={<BrandPage />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/admin" element={<Admin />} />

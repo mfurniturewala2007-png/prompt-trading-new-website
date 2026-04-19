@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabase';
 import { Tag, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const Brands = () => {
   const [brands, setBrands] = useState([]);
@@ -43,57 +44,59 @@ const Brands = () => {
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem' }}>
           {brands.length > 0 ? brands.map((brand, i) => (
-            <motion.div 
-              key={brand.id} 
-              initial={{ opacity: 0, scale: 0.9, y: 30 }}
-              whileInView={{ opacity: 1, scale: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: i * 0.05, type: 'spring', stiffness: 200, damping: 20 }}
-              style={{
-                padding: '2rem 1rem',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                textAlign: 'center',
-                gap: '1.5rem'
-              }}
-            >
-              <div style={{
-                width: '100%', height: '160px', display: 'flex', alignItems: 'center', justifyContent: 'center', perspective: '1000px'
-              }}>
-                {brand.image_url ? (
-                  <motion.img 
-                    src={brand.image_url} 
-                    alt={brand.name} 
-                    initial={{ filter: 'drop-shadow(0px 0px 0px rgba(0,0,0,0))' }}
-                    whileHover={{ 
-                      scale: 1.15, 
-                      filter: 'drop-shadow(0px 20px 35px rgba(255, 255, 255, 0.2))',
-                      y: -10,
-                      rotateX: 5
-                    }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-                    style={{ 
-                      maxHeight: '100%', 
-                      maxWidth: '100%', 
-                      objectFit: 'contain',
-                      transformOrigin: 'bottom center'
-                    }} 
-                  />
-                ) : (
-                  <Award size={64} color="var(--primary-color)" style={{ opacity: 0.3 }} />
-                )}
-              </div>
-              <div>
-                <motion.h3 
-                  whileHover={{ color: 'var(--primary-color)' }}
-                  style={{ fontSize: '1.75rem', marginBottom: '0.75rem', letterSpacing: '-0.5px', transition: 'var(--transition)' }}
-                >
-                  {brand.name}
-                </motion.h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6 }}>{brand.description}</p>
-              </div>
-            </motion.div>
+            <Link to={`/brands/${encodeURIComponent(brand.name)}`} key={brand.id} style={{ display: 'block' }}>
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: i * 0.05, type: 'spring', stiffness: 200, damping: 20 }}
+                style={{
+                  padding: '2rem 1rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  gap: '1.5rem',
+                  height: '100%'
+                }}
+              >
+                <div style={{
+                  width: '100%', height: '160px', display: 'flex', alignItems: 'center', justifyContent: 'center', perspective: '1000px'
+                }}>
+                  {brand.image_url ? (
+                    <motion.img 
+                      src={brand.image_url} 
+                      alt={brand.name} 
+                      initial={{ filter: 'drop-shadow(0px 0px 0px rgba(0,0,0,0))' }}
+                      whileHover={{ 
+                        scale: 1.15, 
+                        filter: 'drop-shadow(0px 20px 35px rgba(255, 255, 255, 0.2))',
+                        y: -10,
+                        rotateX: 5
+                      }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                      style={{ 
+                        maxHeight: '100%', 
+                        maxWidth: '100%', 
+                        objectFit: 'contain',
+                        transformOrigin: 'bottom center'
+                      }} 
+                    />
+                  ) : (
+                    <Award size={64} color="var(--primary-color)" style={{ opacity: 0.3 }} />
+                  )}
+                </div>
+                <div>
+                  <motion.h3 
+                    whileHover={{ color: 'var(--primary-color)' }}
+                    style={{ fontSize: '1.75rem', marginBottom: '0.75rem', letterSpacing: '-0.5px', transition: 'var(--transition)' }}
+                  >
+                    {brand.name}
+                  </motion.h3>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6 }}>{brand.description}</p>
+                </div>
+              </motion.div>
+            </Link>
           )) : (
             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', background: 'var(--surface-color)', borderRadius: '24px', color: 'var(--text-dim)' }}>
               Brand network details will appear here once authenticated.

@@ -166,64 +166,65 @@ const Home = () => {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.5rem' }}>
             {brands.length > 0 ? brands.map((brand, i) => (
-              <motion.div 
-                key={brand.id}
-                initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: i * 0.05, type: "spring", stiffness: 200, damping: 20 }}
-                style={{
-                  height: '140px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  padding: '1.5rem',
-                  position: 'relative'
-                }}
-              >
-                {brand.image_url ? (
-                  <motion.img 
-                    src={brand.image_url} 
-                    alt={brand.name} 
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      const fallback = document.createElement('h3');
-                      fallback.innerText = brand.name;
-                      fallback.style.cssText = "font-size: 1.35rem; color: var(--text-primary); letter-spacing: 2px; font-weight: 900; text-transform: uppercase; margin: 0;";
-                      e.currentTarget.parentNode.appendChild(fallback);
-                    }}
-                    initial={{ filter: 'drop-shadow(0px 0px 0px rgba(0,0,0,0))' }}
-                    whileHover={{ 
-                      scale: 1.15, 
-                      filter: 'drop-shadow(0px 15px 25px rgba(255, 255, 255, 0.2))',
-                      y: -10
-                    }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-                    style={{ 
-                      maxWidth: '100%', 
-                      maxHeight: '100%', 
-                      objectFit: 'contain',
-                      transformOrigin: 'center'
-                    }} 
-                  />
-                ) : (
-                  <motion.h3 
-                    whileHover={{ scale: 1.1, color: 'var(--primary-color)', y: -5 }}
-                    transition={{ type: 'spring', stiffness: 300 }}
-                    style={{ 
-                      fontSize: '1.5rem', 
-                      color: 'var(--text-secondary)', 
-                      letterSpacing: '2px', 
-                      fontWeight: 900,
-                      textTransform: 'uppercase',
-                      margin: 0
-                    }}
-                  >
-                    {brand.name}
-                  </motion.h3>
-                )}
-              </motion.div>
+              <Link to={`/brands/${encodeURIComponent(brand.name)}`} key={brand.id} style={{ display: 'block' }}>
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                  whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ delay: i * 0.05, type: "spring", stiffness: 200, damping: 20 }}
+                  style={{
+                    height: '140px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    padding: '1.5rem',
+                    position: 'relative'
+                  }}
+                >
+                  {brand.image_url ? (
+                    <motion.img 
+                      src={brand.image_url} 
+                      alt={brand.name} 
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        const fallback = document.createElement('h3');
+                        fallback.innerText = brand.name;
+                        fallback.style.cssText = "font-size: 1.35rem; color: var(--text-primary); letter-spacing: 2px; font-weight: 900; text-transform: uppercase; margin: 0;";
+                        e.currentTarget.parentNode.appendChild(fallback);
+                      }}
+                      initial={{ filter: 'drop-shadow(0px 0px 0px rgba(0,0,0,0))' }}
+                      whileHover={{ 
+                        scale: 1.15, 
+                        filter: 'drop-shadow(0px 15px 25px rgba(255, 255, 255, 0.2))',
+                        y: -10
+                      }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                      style={{ 
+                        maxWidth: '100%', 
+                        maxHeight: '100%', 
+                        objectFit: 'contain',
+                        transformOrigin: 'center'
+                      }} 
+                    />
+                  ) : (
+                    <motion.h3 
+                      whileHover={{ scale: 1.1, color: 'var(--primary-color)', y: -5 }}
+                      transition={{ type: 'spring', stiffness: 300 }}
+                      style={{ 
+                        fontSize: '1.5rem', 
+                        color: 'var(--text-secondary)', 
+                        letterSpacing: '2px', 
+                        fontWeight: 900,
+                        textTransform: 'uppercase',
+                        margin: 0
+                      }}
+                    >
+                      {brand.name}
+                    </motion.h3>
+                  )}
+                </motion.div>
+              </Link>
             )) : (
               <div style={{ gridColumn: '1 / -1', padding: '3rem', textAlign: 'center', border: '1px dashed var(--border-color)', color: 'var(--text-dim)' }}>
                 Waiting for manufacturer data sync... Please configure brands in Admin Panel.
