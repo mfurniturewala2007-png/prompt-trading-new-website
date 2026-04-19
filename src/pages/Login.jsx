@@ -114,8 +114,8 @@ const Login = () => {
             </div>
           ) : (
             <>
-              <h2 style={{ marginBottom: '0.5rem', fontSize: '1.75rem' }}>Create Account</h2>
-              <p style={{ color: 'var(--text-dim)', marginBottom: '2rem', fontSize: '0.9rem' }}>Enter your details to join the distributor network.</p>
+              <h2 style={{ marginBottom: '0.5rem', fontSize: '1.75rem', color: '#ffffff' }}>Create Account</h2>
+              <p style={{ color: '#ffffff', marginBottom: '2rem', fontSize: '0.9rem' }}>Enter your details to join the distributor network.</p>
               
               {error && (
                 <div style={{ background: 'rgba(239, 68, 68, 0.1)', borderLeft: '4px solid #ef4444', padding: '1rem', color: '#f8fafc', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
@@ -125,7 +125,7 @@ const Login = () => {
 
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Full Name</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#ffffff', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Full Name</label>
                   <div style={{ position: 'relative' }}>
                     <User size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
                     <input 
@@ -135,14 +135,14 @@ const Login = () => {
                       value={formData.name}
                       onChange={handleChange}
                       className="form-input" 
-                      style={{ paddingLeft: '3rem', height: '50px', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px' }} 
+                      style={{ paddingLeft: '3rem', height: '50px', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', color: 'var(--text-primary)' }} 
                       placeholder="John Doe" 
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Phone Number</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#ffffff', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Phone Number</label>
                   <div style={{ position: 'relative' }}>
                     <Phone size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
                     <input 
@@ -152,14 +152,14 @@ const Login = () => {
                       value={formData.phone_number}
                       onChange={handleChange}
                       className="form-input" 
-                      style={{ paddingLeft: '3rem', height: '50px', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px' }} 
+                      style={{ paddingLeft: '3rem', height: '50px', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', color: 'var(--text-primary)' }} 
                       placeholder="+91 98765 43210" 
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Email Address</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#ffffff', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Email Address</label>
                   <div style={{ position: 'relative' }}>
                     <Mail size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
                     <input 
@@ -169,7 +169,7 @@ const Login = () => {
                       value={formData.email}
                       onChange={handleChange}
                       className="form-input" 
-                      style={{ paddingLeft: '3rem', height: '50px', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px' }} 
+                      style={{ paddingLeft: '3rem', height: '50px', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', color: 'var(--text-primary)' }} 
                       placeholder="john@engineering.com" 
                     />
                   </div>
