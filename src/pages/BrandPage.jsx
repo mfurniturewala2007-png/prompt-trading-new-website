@@ -60,12 +60,16 @@ const BrandPage = () => {
             <div className="brand-hero-ambient"></div>
             
             <div style={{ position: 'relative', zIndex: 1 }}>
-              {brandData?.image_url ? (
+              {isSnapOn ? (
+                <h1 className="brand-hero-title" style={{ fontSize: 'clamp(4rem, 8vw, 7rem)', margin: 0, textTransform: 'uppercase', letterSpacing: '-2px', fontStyle: 'italic', fontWeight: 900, color: '#fff' }}>
+                  {decodedBrandName}
+                </h1>
+              ) : brandData?.image_url ? (
                 <div style={{ padding: '2rem', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', display: 'inline-block', marginBottom: '1.5rem', border: '1px solid rgba(255,255,255,0.05)' }}>
                    <img src={brandData.image_url} alt={brandData.name} style={{ maxHeight: '120px', maxWidth: '300px', objectFit: 'contain' }} />
                 </div>
               ) : (
-                <h1 style={{ fontSize: 'clamp(3rem, 6vw, 5rem)', margin: 0, textTransform: 'uppercase', letterSpacing: '-2px' }}>
+                <h1 className="brand-hero-title" style={{ fontSize: 'clamp(3rem, 6vw, 5rem)', margin: 0, textTransform: 'uppercase', letterSpacing: '-2px' }}>
                   {brandData ? brandData.name : decodedBrandName}
                 </h1>
               )}

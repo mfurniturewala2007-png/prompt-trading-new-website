@@ -643,14 +643,14 @@ main.content {
 }
 
 .theme-snapon .brand-hero-content {
-  background: linear-gradient(145deg, rgba(227, 0, 15, 0.1) 0%, rgba(10, 0, 0, 0.9) 100%);
-  border: 1px solid rgba(227, 0, 15, 0.3);
-  box-shadow: 0 20px 50px rgba(227, 0, 15, 0.1);
+  background: var(--primary-color);
+  border: none;
+  box-shadow: 0 20px 50px rgba(227, 0, 15, 0.4);
 }
 
 .theme-snapon .brand-hero-ambient {
-  background: radial-gradient(circle, #e3000f 0%, transparent 50%);
-  opacity: 0.15;
+  background: radial-gradient(circle, #fff 0%, transparent 60%);
+  opacity: 0.1;
 }
 
 .theme-snapon .btn-primary {
