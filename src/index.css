@@ -630,9 +630,28 @@ main.content {
   --primary-light: rgba(255, 255, 255, 0.2);
   --border-color: rgba(255, 255, 255, 0.2);
   --text-dim: rgba(255, 255, 255, 0.6);
-  background: radial-gradient(circle at top center, #e3000f 0%, #a0000a 100%); /* Vivid Snap-on Red spanning the whole page */
+  background-color: #0d0001; /* Very dark red/black base */
+  background-image: 
+    radial-gradient(circle at 10% 20%, #ff0f1e 0%, transparent 45%),
+    radial-gradient(circle at 90% 80%, #b3000b 0%, transparent 45%);
   background-attachment: fixed;
   color: #ffffff;
+  position: relative;
+}
+
+/* Global frosted glass layer spanning the whole background */
+.theme-snapon::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(180, 0, 15, 0.4); /* Translucent red tint */
+  backdrop-filter: blur(60px); /* Massive frost blur */
+  -webkit-backdrop-filter: blur(60px);
+  z-index: -1;
+  pointer-events: none;
 }
 
 .theme-snapon .glass {
